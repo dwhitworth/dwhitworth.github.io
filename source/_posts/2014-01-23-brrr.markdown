@@ -6,6 +6,7 @@ comments: true
 categories: 
 ---
 Where I am now...
+<!-- more -->
 ![Weather in LA](/images/photo-2.png)
 
 Where I'll be in two weeks...
