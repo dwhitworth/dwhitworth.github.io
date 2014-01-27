@@ -1,7 +1,0 @@
----
-layout: post
-title: "Brrr"
-date: 2014-01-26 20:25:49 -0800
-comments: true
-categories: 
----
