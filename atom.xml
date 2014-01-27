@@ -4,7 +4,7 @@
   <title><![CDATA[Donovan Whitworth]]></title>
   <link href="http://dwhitworth.github.io/atom.xml" rel="self"/>
   <link href="http://dwhitworth.github.io/"/>
-  <updated>2014-01-26T20:35:30-08:00</updated>
+  <updated>2014-01-26T20:36:50-08:00</updated>
   <id>http://dwhitworth.github.io/</id>
   <author>
     <name><![CDATA[Donovan Whitworth]]></name>
@@ -18,8 +18,12 @@
     <link href="http://dwhitworth.github.io/blog/2014/01/23/brrr/"/>
     <updated>2014-01-23T20:25:49-08:00</updated>
     <id>http://dwhitworth.github.io/blog/2014/01/23/brrr</id>
-    <content type="html"><![CDATA[<p>Where I am now&hellip;
-<img src="http://dwhitworth.github.io/images/photo-2.png" alt="Weather in LA" /></p>
+    <content type="html"><![CDATA[<p>Where I am now&hellip;</p>
+
+<!-- more -->
+
+
+<p><img src="http://dwhitworth.github.io/images/photo-2.png" alt="Weather in LA" /></p>
 
 <p>Where I&rsquo;ll be in two weeks&hellip;
 <img src="http://dwhitworth.github.io/images/photo-1.png" alt="Weather in Austin" /></p>
