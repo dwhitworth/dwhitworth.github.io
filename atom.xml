@@ -1,16 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[My Octopress Blog]]></title>
+  <title><![CDATA[Donovan Whitworth]]></title>
   <link href="http://dwhitworth.github.io/atom.xml" rel="self"/>
   <link href="http://dwhitworth.github.io/"/>
-  <updated>2014-01-26T20:21:36-08:00</updated>
+  <updated>2014-01-26T20:29:47-08:00</updated>
   <id>http://dwhitworth.github.io/</id>
   <author>
-    <name><![CDATA[Your Name]]></name>
-    
+    <name><![CDATA[Donovan Whitworth]]></name>
+    <email><![CDATA[donovan.whitworth@gmail.com]]></email>
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Brrr]]></title>
+    <link href="http://dwhitworth.github.io/blog/2014/01/26/brrr/"/>
+    <updated>2014-01-26T20:25:49-08:00</updated>
+    <id>http://dwhitworth.github.io/blog/2014/01/26/brrr</id>
+    <content type="html"><![CDATA[
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Hello World]]></title>
+    <link href="http://dwhitworth.github.io/blog/2014/01/21/hello-world/"/>
+    <updated>2014-01-21T20:25:35-08:00</updated>
+    <id>http://dwhitworth.github.io/blog/2014/01/21/hello-world</id>
+    <content type="html"><![CDATA[<p>In a few days I&rsquo;ll be heading to Austin to attend an immersive, boot-camp style course in full stack Web development called <a href="http://www.themakersquare.com">MakerSquare</a>.</p>
+
+<!-- more -->
+
+
+<p>I&rsquo;m beyond excited, as we&rsquo;ll be covering some great tools and technologies:</p>
+
+<ul>
+<li>Ruby &amp; Ruby on Rails</li>
+<li>JavaScript</li>
+<li>HTML and CSS</li>
+<li>jQuery</li>
+<li>Sinatra</li>
+<li>backbone.js and riot.js</li>
+<li>APIs</li>
+<li>SQL (I imagine SQLite and PostgreSQL)</li>
+<li>Git</li>
+</ul>
+
+
+<p>and tons more. We&rsquo;ll spend 10+ hours a day, every day, for 10 weeks learning technologies, building projects, networking, participating in hackathons, etc. Hopefuly, the 400+ hours I have spent in self-study and the 800+ hours I&rsquo;ll spend at MakerSquare will have given me enough knowledge to build some cool apps, and allow me to be useful to someone as a professional (junior) software engineer somewhere.</p>
+
+<p>I&rsquo;ve been doing self-study since July and here are some of the resources I have completed in the past 6 months:</p>
+
+<p>Books:</p>
+
+<ul>
+<li><em>Learn To Program</em> by Chris Pine</li>
+<li><em>CLI The Hard Way</em> by Zed A. Shaw</li>
+<li><em>Learn Ruby The Hard Way</em> by Zed A. Shaw</li>
+<li><em>Pragmatic Thinking &amp; Learning</em> by Andy Hunt</li>
+<li><em>Programming Ruby</em> (The &ldquo;Pickaxe&rdquo;) by Dave Thomas with Chad Fowler and Andy Hunt</li>
+<li><em>Practical Object-Oriented Design In Ruby</em> by Sandi Metz</li>
+<li><em>Eloquent Javascript</em> by Marijn Haverbeke</li>
+<li><em>Eloquent Ruby</em> by Russ Olsen</li>
+</ul>
+
+
+<p>Online Resources:</p>
+
+<p><a href="http://codecademy.com">CodeAcademy</a> &ndash; I&rsquo;ve finished the Web Fundamentals, JavaScript, jQuery and Ruby tracks.</p>
+
+<p><a href="http://codeschool.com">Code School</a> &ndash; Try Ruby, Ruby Bits I and II, Rails for Zombies I and II, JavaScript Road Trip I, II and III, CSS Cross Country, Try Git, Try jQuery.</p>
+
+<p><a href="http://teamtreehouse.com">Team Treehouse</a> &ndash; Earned over 75 achievements including courses on Ruby, Rails, JS, SQL, HTML and CSS</p>
+
+<p><a href="http://rubymonk.org">Ruby Monk</a> &ndash; Finished the Ruby Primer</p>
+
+<p>I&rsquo;ve also gone through a few tutorials on regular expressions, and some code challenge sites such as <a href="http://rubyquiz.com">Ruby Quiz</a> and <a href="http://rubeque.herokuapp.com">Rubeque</a>.</p>
+
+<p>Class starts on February 4 and I plan to spend the next couple of weeks diving into backbone.js a little bit, getting a bit deeper into jQuery and getting through as much of the <a href="http://ruby.railstutorial.org">Rails Tutorial</a> as I can.</p>
+
+<p>I&rsquo;ve been spending almost all of my free time learning these technologies and going through tutorials, but not actually building anything. The school recommends having a blog, so rather than build a blog using Wordpress, Tumblr, Blogger or some other CMS, I thought it would be much hacker-ier to build it in Octopress and push it to Github and have it hosted through Github Pages.</p>
+
+<p>So, here it is &hellip; my first web app &hellip; my blog.</p>
+]]></content>
+  </entry>
   
 </feed>
