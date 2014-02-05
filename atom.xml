@@ -4,7 +4,7 @@
   <title><![CDATA[Donovan Whitworth]]></title>
   <link href="http://dwhitworth.github.io/atom.xml" rel="self"/>
   <link href="http://dwhitworth.github.io/"/>
-  <updated>2014-02-01T10:12:09-08:00</updated>
+  <updated>2014-02-04T21:03:54-06:00</updated>
   <id>http://dwhitworth.github.io/</id>
   <author>
     <name><![CDATA[Donovan Whitworth]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Git...]]></title>
     <link href="http://dwhitworth.github.io/blog/2014/02/01/git-dot-dot-dot/"/>
-    <updated>2014-02-01T10:09:47-08:00</updated>
+    <updated>2014-02-01T12:09:47-06:00</updated>
     <id>http://dwhitworth.github.io/blog/2014/02/01/git-dot-dot-dot</id>
     <content type="html"><![CDATA[<p><code>git push my arse to Austin!</code></p>
 ]]></content>
@@ -25,7 +25,7 @@
   <entry>
     <title type="html"><![CDATA[Brrr]]></title>
     <link href="http://dwhitworth.github.io/blog/2014/01/23/brrr/"/>
-    <updated>2014-01-23T20:25:49-08:00</updated>
+    <updated>2014-01-23T22:25:49-06:00</updated>
     <id>http://dwhitworth.github.io/blog/2014/01/23/brrr</id>
     <content type="html"><![CDATA[<p>Where I am now&hellip;</p>
 
@@ -42,7 +42,7 @@
   <entry>
     <title type="html"><![CDATA[Hello World]]></title>
     <link href="http://dwhitworth.github.io/blog/2014/01/21/hello-world/"/>
-    <updated>2014-01-21T20:25:35-08:00</updated>
+    <updated>2014-01-21T22:25:35-06:00</updated>
     <id>http://dwhitworth.github.io/blog/2014/01/21/hello-world</id>
     <content type="html"><![CDATA[<p>In a few days I&rsquo;ll be heading to Austin to attend an immersive, boot-camp style course in full stack Web development called <a href="http://www.themakersquare.com">MakerSquare</a>.</p>
 
