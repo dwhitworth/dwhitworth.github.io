@@ -4,7 +4,7 @@
   <title><![CDATA[Donovan Whitworth]]></title>
   <link href="http://dwhitworth.github.io/atom.xml" rel="self"/>
   <link href="http://dwhitworth.github.io/"/>
-  <updated>2014-02-04T21:23:22-06:00</updated>
+  <updated>2014-02-04T22:29:10-06:00</updated>
   <id>http://dwhitworth.github.io/</id>
   <author>
     <name><![CDATA[Donovan Whitworth]]></name>
@@ -25,9 +25,11 @@
 <!-- more -->
 
 
-<p>After the introductions, we went through a short tutorial on Git and GitHub, and although it was covered in the pre-work and most of it was review, I definitely learned that I have to break some bad habits.</p>
+<p>After the introductions, we went on to setting up our dev environments on our individual machines. In addition to making sure we had the basics installed (Sublime Text, iTerm2, etc), it involved setting up some command line tools, virtual machines and other applications to make our dev lives a bit more productive.</p>
 
-<p>For example, I am using Git for this blog, and when I add files to Git, I have been using the <code>git add .</code> command&hellip;. Wrong!</p>
+<p>Later, we went through a short tutorial on Git and GitHub, and although it was covered in the pre-work and most of it was review, I definitely learned that I have to break some bad habits.</p>
+
+<p>For example, I am using Git for this blog, and when I add files to my repository, I have been using the <code>git add .</code> command&hellip;. Wrong!</p>
 
 <p><code>git add .</code> blindly adds any file in the directory to your commit, so that means it&rsquo;s too easy to add files you didn&rsquo;t want to commit to your repository. It&rsquo;s better to use <code>git add [filename]</code> or even <code>git add -p</code>, which will give you a yes/no confirmation for each file it adds to your commit.</p>
 
