@@ -4,7 +4,7 @@
   <title><![CDATA[Donovan Whitworth]]></title>
   <link href="http://dwhitworth.github.io/atom.xml" rel="self"/>
   <link href="http://dwhitworth.github.io/"/>
-  <updated>2014-02-04T21:03:54-06:00</updated>
+  <updated>2014-02-04T21:23:22-06:00</updated>
   <id>http://dwhitworth.github.io/</id>
   <author>
     <name><![CDATA[Donovan Whitworth]]></name>
@@ -12,6 +12,30 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[MakerSquare Day 1]]></title>
+    <link href="http://dwhitworth.github.io/blog/2014/02/04/makersquare-day-1/"/>
+    <updated>2014-02-04T21:09:00-06:00</updated>
+    <id>http://dwhitworth.github.io/blog/2014/02/04/makersquare-day-1</id>
+    <content type="html"><![CDATA[<p>So, I got through the first day of MakerSquare.</p>
+
+<p>We went through introductions and course structure and an open Q&amp;A with the founders, instructors and a couple of alumni. I have been truly impressed with what the students have been able to create after 10 grueling weeks here.</p>
+
+<!-- more -->
+
+
+<p>After the introductions, we went through a short tutorial on Git and GitHub, and although it was covered in the pre-work and most of it was review, I definitely learned that I have to break some bad habits.</p>
+
+<p>For example, I am using Git for this blog, and when I add files to Git, I have been using the <code>git add .</code> command&hellip;. Wrong!</p>
+
+<p><code>git add .</code> blindly adds any file in the directory to your commit, so that means it&rsquo;s too easy to add files you didn&rsquo;t want to commit to your repository. It&rsquo;s better to use <code>git add [filename]</code> or even <code>git add -p</code>, which will give you a yes/no confirmation for each file it adds to your commit.</p>
+
+<p>The second half of the day was doing some challenges in Ruby. I found these to be fairly trivial, but good review nonetheless. I imagine tomorrow will be harder.</p>
+
+<p>I&rsquo;ll sleep better tonight &hellip; I hope.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Git...]]></title>
