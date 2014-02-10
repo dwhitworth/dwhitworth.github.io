@@ -69,7 +69,7 @@ github_show_profile_link: true
 github_skip_forks: true
 
 # Twitter
-twitter_user:
+twitter_user: dwhitworthdev
 twitter_tweet_button: true
 
 # Google +1
@@ -104,5 +104,5 @@ linkedin_user: donovanwhitworth
 
 # Instagram
 instagram_user: 361614302
-instagram_client: 
+instagram_client:
 instagram_access_token: 361614302.5b9e1e6.a4675832a2b2412784e32a4a608b2cae
