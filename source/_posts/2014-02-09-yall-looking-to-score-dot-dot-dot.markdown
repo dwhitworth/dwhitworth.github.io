@@ -1,6 +1,6 @@
 ---
 layout: post
-title: ""Y'all looking to score...""
+title: "Y'all looking to score..."
 date: 2014-02-09 22:02:43 -0600
 comments: true
 categories:
