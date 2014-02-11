@@ -10,7 +10,7 @@ categories:
 That's what was proposed to me and a member of my cohort at the bus stop yesterday. An interesting start to an otherwise awesome weekend.
 <!-- more -->
 
-We were going at it pretty hard all week and Saturday. The excercises in class were challenging, but many of the cohort still have yet to finish Friday's assignment, which involved using rSpec - the tests were pre-written - to build a Library application in Ruby.
+We were going at it pretty hard all week and Saturday. The exercises in class were challenging, but many of the cohort still have yet to finish Friday's assignment, which involved using rSpec - the tests were pre-written - to build a Library application in Ruby.
 
 I was one of maybe a handful that finished the project on Friday afternoon, but I don't think it necessarily indicates that I am further along than most ... I just happened to finish. I already received the review from one of our instructors, and he said that I did a decent job, but there are some flaws in my logic that can be shored up.
 
