@@ -4,7 +4,7 @@
   <title><![CDATA[Donovan Whitworth]]></title>
   <link href="http://dwhitworth.github.io/atom.xml" rel="self"/>
   <link href="http://dwhitworth.github.io/"/>
-  <updated>2014-02-10T22:37:23-06:00</updated>
+  <updated>2014-02-16T20:36:01-06:00</updated>
   <id>http://dwhitworth.github.io/</id>
   <author>
     <name><![CDATA[Donovan Whitworth]]></name>
@@ -12,6 +12,91 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Ruby: using .inject with a hash accumulator]]></title>
+    <link href="http://dwhitworth.github.io/blog/2014/02/16/using-hash-accumulators-with-inject/"/>
+    <updated>2014-02-16T19:29:43-06:00</updated>
+    <id>http://dwhitworth.github.io/blog/2014/02/16/using-hash-accumulators-with-inject</id>
+    <content type="html"><![CDATA[<p>Earlier this week we were tasked with calculating the most and least popular colors from an array of cars. So, given this array:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="vi">@cars</span> <span class="o">=</span> <span class="o">[]</span>
+</span><span class='line'><span class="mi">3</span><span class="o">.</span><span class="n">times</span> <span class="p">{</span> <span class="vi">@cars</span> <span class="o">&lt;&lt;</span> <span class="no">Car</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;black&#39;</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'><span class="mi">5</span><span class="o">.</span><span class="n">times</span> <span class="p">{</span> <span class="vi">@cars</span> <span class="o">&lt;&lt;</span> <span class="no">Car</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;silver&#39;</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'><span class="mi">2</span><span class="o">.</span><span class="n">times</span> <span class="p">{</span> <span class="vi">@cars</span> <span class="o">&lt;&lt;</span> <span class="no">Car</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;white&#39;</span><span class="p">)</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We needed to make methods that would return the most popular color (5 silver cars) and the least popular (2 white cars). The first thing I did was make a new array from the array of car objects (using the .map method) populated with just colors. Like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="vi">@colors</span> <span class="o">=</span> <span class="vi">@cars</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">car</span><span class="o">|</span> <span class="n">car</span><span class="o">.</span><span class="n">color</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If you puts that array it would look like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">[</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="s1">&#39;silver&#39;</span><span class="p">,</span> <span class="s1">&#39;silver&#39;</span><span class="p">,</span> <span class="s1">&#39;silver&#39;</span><span class="p">,</span> <span class="s1">&#39;silver&#39;</span><span class="p">,</span> <span class="s1">&#39;silver&#39;</span><span class="p">,</span> <span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="s2">&quot;white&quot;</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So, now how do you get a count of all items in that array, incremented every time you hit a duplicate?</p>
+
+<p>.inject</p>
+
+<p>First, let&rsquo;s talk about .inject. Ruby docs says .inject:</p>
+
+<blockquote><p>Combines all elements of enum by applying a binary operation, specified by a block or a symbol that names a method or operator.</p>
+
+<p>If you specify a block, then for each element in enum the block is passed an accumulator value and the element. At the end of the iteration, the final value of memo is the return value for the method.</p></blockquote>
+
+<p>whaahuhhh?</p>
+
+<p>Well, let&rsquo;s break it down by using the classic example of .inject. To obtain a sum of each element in an array you could do this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="o">].</span><span class="n">inject</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">item</span><span class="p">,</span> <span class="n">element</span><span class="o">|</span> <span class="n">item</span> <span class="o">+</span> <span class="n">element</span> <span class="p">}</span> <span class="c1"># =&gt; 15</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The argument you pass into <code>.inject(0)</code> is then passed into the <code>item</code> variable, which is then added to the first <code>element</code> in the array. Then the return value of the block is passed back into the block as <code>item</code>. This is done for each element in the array, leaving you with a sum of the numbers.</p>
+
+<p>So, back to our array of colors. How do I turn that into <code>{&ldquo;black&rdquo; => 3, &ldquo;silver&rdquo; => 5, &ldquo;white&rdquo; => 2}</code>?</p>
+
+<p>Well, if I use <code>Hash.new(0)</code> as the first accumulator value, that will make a new hash and the default values for each key you pass in will be 0. Then, everytime I pass a duplicate into that hash, I just increment the value for that given key, then return the entire hash back into the accumulator. Like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="vi">@frequency</span> <span class="o">=</span> <span class="vi">@colors</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="no">Hash</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="k">do</span> <span class="o">|</span><span class="nb">hash</span><span class="p">,</span> <span class="n">key</span><span class="o">|</span>
+</span><span class='line'>    <span class="nb">hash</span><span class="o">[</span><span class="n">key</span><span class="o">]</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>    <span class="nb">hash</span>
+</span><span class='line'>    <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So, for each element of the @colors array, we inject a hash with the element becoming the key, and everytime that key is passed into the block, we increment the value. Voila!</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="p">{</span><span class="s2">&quot;black&quot;</span> <span class="o">=&gt;</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;silver&quot;</span> <span class="o">=&gt;</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;white&quot;</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now I can access the lowest and/or highest values in the array using the <code>min_by</code> or <code>max_by</code> methods for a hash.</p>
+
+<p>Until next time&hellip;</p>
+
+<blockquote><p>If you end up with a boring miserable life because you listened to your mom, your dad, your teacher, your priest, or some guy on television telling you how to do your shit, then you deserve it.</p>
+
+<p>- Frank Zappa</p></blockquote>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Y'all looking to score...]]></title>
