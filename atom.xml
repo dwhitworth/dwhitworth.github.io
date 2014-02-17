@@ -4,7 +4,7 @@
   <title><![CDATA[Donovan Whitworth]]></title>
   <link href="http://dwhitworth.github.io/atom.xml" rel="self"/>
   <link href="http://dwhitworth.github.io/"/>
-  <updated>2014-02-16T20:39:50-06:00</updated>
+  <updated>2014-02-16T20:43:17-06:00</updated>
   <id>http://dwhitworth.github.io/</id>
   <author>
     <name><![CDATA[Donovan Whitworth]]></name>
@@ -14,10 +14,10 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Ruby: using .inject with a hash accumulator]]></title>
-    <link href="http://dwhitworth.github.io/blog/2014/02/16/using-hash-accumulators-with-inject/"/>
+    <title type="html"><![CDATA[Ruby: counting duplicates in an array with inject]]></title>
+    <link href="http://dwhitworth.github.io/blog/2014/02/16/counting-duplicates-in-an-array-with-inject/"/>
     <updated>2014-02-16T19:29:43-06:00</updated>
-    <id>http://dwhitworth.github.io/blog/2014/02/16/using-hash-accumulators-with-inject</id>
+    <id>http://dwhitworth.github.io/blog/2014/02/16/counting-duplicates-in-an-array-with-inject</id>
     <content type="html"><![CDATA[<p>Earlier this week we were tasked with calculating the most and least popular colors, given an array of car objects. <!-- more -->We started with this array:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
