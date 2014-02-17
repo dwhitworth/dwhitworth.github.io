@@ -6,7 +6,7 @@ comments: true
 categories:
 ---
 
-Earlier this week we were tasked with calculating the most and least popular colors from an array of cars. So, given this array:
+Earlier this week we were tasked with calculating the most and least popular colors, given an array of car objects. <!-- more -->We startd with this array:
 
 ```ruby
 @cars = []
