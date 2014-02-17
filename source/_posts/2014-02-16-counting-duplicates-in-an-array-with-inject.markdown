@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Ruby: using .inject with a hash accumulator"
+title: "Ruby: counting duplicates in an array with inject"
 date: 2014-02-16 19:29:43 -0600
 comments: true
 categories:
