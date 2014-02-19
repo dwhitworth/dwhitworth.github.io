@@ -105,4 +105,7 @@ linkedin_user: donovanwhitworth
 # Instagram
 instagram_user: 361614302
 instagram_client:
-instagram_access_token: 361614302.5b9e1e6.b6760f58a4e44394b94a4ce61ac00899
+instagram_access_token: 361614302.b6760f5.f781c6d06a4c4346b888465dbfaaab05
+
+# instagram code 6367ec02069f4a2cbc0018a0f46c030a
+# {"access_token":"361614302.b6760f5.f781c6d06a4c4346b888465dbfaaab05","user":{"username":"dwhitworth1","bio":"","website":"","profile_picture":"http:\/\/images.ak.instagram.com\/profiles\/profile_361614302_75sq_1366923011.jpg","full_name":"Donovan Whitworth","id":"361614302"}}%
