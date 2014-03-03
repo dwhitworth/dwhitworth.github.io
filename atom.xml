@@ -4,7 +4,7 @@
   <title><![CDATA[Donovan Whitworth]]></title>
   <link href="http://dwhitworth.github.io/atom.xml" rel="self"/>
   <link href="http://dwhitworth.github.io/"/>
-  <updated>2014-02-19T11:21:27-06:00</updated>
+  <updated>2014-03-02T21:28:50-06:00</updated>
   <id>http://dwhitworth.github.io/</id>
   <author>
     <name><![CDATA[Donovan Whitworth]]></name>
@@ -12,6 +12,54 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[git stash]]></title>
+    <link href="http://dwhitworth.github.io/blog/2014/02/23/git-stash/"/>
+    <updated>2014-02-23T20:46:06-06:00</updated>
+    <id>http://dwhitworth.github.io/blog/2014/02/23/git-stash</id>
+    <content type="html"><![CDATA[<p>During this weekend&rsquo;s hackathon, our team split up duties when we were not pair programming. With over 50 issues, 90 commits and <!-- more -->30 branches, this means we had a s**t-ton of pull requests, code-review and merging, in our effort to apply best practices for version control.</p>
+
+<p>When we had merge conflicts, Git suggested we stash our changes, pull down the most recent changes, then merge our branch and resolve merge issues before pushing.</p>
+
+<p>Great, but I had no idea what git stash was.</p>
+
+<p>Well, in plain language, git warns you that if you pull a branch, you better be ready for it to overwrite everything you&rsquo;ve just done unless you take certain steps:</p>
+
+<ul>
+<li><p>Discard your changes: You could use <code>$ git clean</code> or <code>$ git reset –hard</code> to do this, this would make all your local changes disappear.</p></li>
+<li><p>Ignore your changes: <code>$ git checkout</code> would keep any changes you made locally that do not conflict with the incoming merge, but you will lose any local changes that do have merge conflicts.</p></li>
+<li><p>Set your changes aside: <code>$ git stash</code> hides your local changes so you can pull down the most recent master, then &lsquo;unstash&rsquo; your changes and resolve merge issues locally.</p></li>
+</ul>
+
+
+<p>So, here is what my normal workflow looked like if I came across a merge conflict:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>git stash
+</span><span class='line'><span class="nv">$ </span>git pull
+</span><span class='line'><span class="nv">$ </span>git stash apply
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You can stash multiple times, but it can get pretty messy. If you have multiple stashes, type <code>$ git list</code> to get a list of your stashes, the output would look something like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>stash@<span class="o">{</span>0<span class="o">}</span>: WIP on master: 049d078 added the index file
+</span><span class='line'>stash@<span class="o">{</span>1<span class="o">}</span>: WIP on master: c264051... Revert <span class="s2">&quot;added file_size&quot;</span>
+</span><span class='line'>stash@<span class="o">{</span>2<span class="o">}</span>: WIP on master: 21d80a5... added number to log
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If this is the case, simply using <code>$ git stash</code> would only apply the most recent stash, so if you wanted to apply a different commit, you would type <code>$ git stash apply stash@{2}</code>, or whatever number corresponds to the stash you want to apply.</p>
+
+<p>Bye for now :)</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Ruby: counting duplicates in an array with inject]]></title>
