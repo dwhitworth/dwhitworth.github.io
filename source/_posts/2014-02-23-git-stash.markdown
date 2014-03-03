@@ -34,3 +34,10 @@ You can stash multiple times, but it can get pretty messy. If you have multiple 
 stash@{0}: WIP on master: 049d078 added the index file
 stash@{1}: WIP on master: c264051... Revert "added file_size"
 stash@{2}: WIP on master: 21d80a5... added number to log
+```
+
+If this is the case, simply using <code>$ git stash</code> would only apply the most recent stash, so if you wanted to apply a different commit, you would type <code>$ git stash apply stash@{2}</code>, or whatever number corresponds to the stash you want to apply.
+
+Bye for now :)
+
+
