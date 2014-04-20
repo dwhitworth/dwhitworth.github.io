@@ -8,6 +8,7 @@ categories:
 
 In JavaScript, we are quite used to the functional features of the language, and creating closures. In Ruby, we do it all the time, but sometimes don't realize that we are creating closures and passing functions around.
 
+<!-- more -->
 Take our very common .map method in Ruby:
 
 ```ruby
