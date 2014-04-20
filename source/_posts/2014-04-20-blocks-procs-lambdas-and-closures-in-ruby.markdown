@@ -6,7 +6,7 @@ comments: true
 categories:
 ---
 
-In JavaScript, we are quite used to the functional features of the language, and creating closures. In Ruby, we do it all the time, but sometimes don't realize that we are creating closures and passing functions around.
+In JavaScript, we are quite used to the functional features of the language and creating closures. In Ruby, we do it all the time, but sometimes don't realize that we are creating closures and passing functions around.
 
 <!-- more -->
 Take our very common .map method in Ruby:
@@ -38,7 +38,7 @@ class Array
 
 end
 ```
-What makes the above an example of a closure. Well, a closure is basically a method(or function) that has a couple of properties:
+What makes the above an example of a closure? Well, a closure is basically a method(or function) that has a couple of properties:
 - It can be passed around, like any other object.
 - It remembers all the values of the variable it had when it was defined. So, even though they may no longer be in scope, the method still has access to those variables.
 
@@ -77,6 +77,6 @@ Here, we have defined a proc and a couple of lambdas, very similar to how we wou
 - Lambdas are more strict with argument checking. With procs you can pass in the wrong number of arguments and will still execute, while lambdas will throw an error.
 - Lambdas can return a value with the <code>return</code> keyword.
 
-So, what's the point of using closures? In a pure functional language, there's a HUGE point to it. Functional languages are *stateless*, but closures are how you can make some state continue as long as the closure continues. In imperative languages like Ruby, the purpose is a little bit cloudier, but you can use lambdas and procs sometimes to make your code a bit more concise is certain situations.
+So, what's the point of using closures? In a pure functional language, there's a HUGE point to it. Functional languages are *stateless*, but closures are how you can make some state continue as long as the closure continues. In imperative languages like Ruby, the purpose is a little bit cloudier, but you can use lambdas and procs sometimes to make your code a bit more concise in certain situations.
 
 Bis später.
