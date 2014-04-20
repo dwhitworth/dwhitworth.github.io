@@ -4,7 +4,7 @@
   <title><![CDATA[Donovan Whitworth]]></title>
   <link href="http://dwhitworth.github.io/atom.xml" rel="self"/>
   <link href="http://dwhitworth.github.io/"/>
-  <updated>2014-04-20T18:30:17-05:00</updated>
+  <updated>2014-04-20T18:31:26-05:00</updated>
   <id>http://dwhitworth.github.io/</id>
   <author>
     <name><![CDATA[Donovan Whitworth]]></name>
@@ -19,6 +19,9 @@
     <updated>2014-04-20T14:03:16-05:00</updated>
     <id>http://dwhitworth.github.io/blog/2014/04/20/blocks-procs-lambdas-and-closures-in-ruby</id>
     <content type="html"><![CDATA[<p>In JavaScript, we are quite used to the functional features of the language, and creating closures. In Ruby, we do it all the time, but sometimes don&rsquo;t realize that we are creating closures and passing functions around.</p>
+
+<!-- more -->
+
 
 <p>Take our very common .map method in Ruby:</p>
 
