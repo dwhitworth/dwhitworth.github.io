@@ -164,7 +164,7 @@
 
 <p><code>SELECT &ldquo;amount&rdquo;.* FROM &ldquo;contributions&rdquo; WHERE &ldquo;contributions&rdquo;.&ldquo;dare_id&rdquo; = &lt;dare_id></code></p>
 
-<p>I seeded a database with 100,000 test contributions and the above method took 1.6 seconds and change. The SQL statement above is putting all the contributions and putting them into memory before adding up the amounts.</p>
+<p>I seeded a database with 100,000 test contributions and the above method took 1.6 seconds and change. The SQL statement above is finding all the contributions and putting them into memory before adding up the amounts.</p>
 
 <p>A much more efficient way is to use SQL to do the work of summing the amounts. It will be much faster and use much less memory. We can refactor the &ldquo;pot_size&rdquo; method to look more like this:</p>
 
