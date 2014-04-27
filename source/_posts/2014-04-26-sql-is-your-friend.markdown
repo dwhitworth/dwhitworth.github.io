@@ -44,7 +44,7 @@ Using this method, we use the has_many association to get all the contributions 
 
 <code>SELECT "amount".* FROM "contributions" WHERE "contributions"."dare_id" = <dare_id></code>
 
-I seeded a database with 100,000 test contributions and the above method took 1.6 seconds and change. The SQL statement above is putting all the contributions and putting them into memory before adding up the amounts.
+I seeded a database with 100,000 test contributions and the above method took 1.6 seconds and change. The SQL statement above is finding all the contributions and putting them into memory before adding up the amounts.
 
 A much more efficient way is to use SQL to do the work of summing the amounts. It will be much faster and use much less memory. We can refactor the "pot_size" method to look more like this:
 
