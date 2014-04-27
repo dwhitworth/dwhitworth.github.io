@@ -54,7 +54,7 @@ def pot_size
 end
 ```
 
-It generated SQl that looked like this:
+It generated SQL that looked like this:
 
 <code>SELECT SUM("contributions"."amount") AS sum_id FROM "contributions" WHERE "contributions"."dare_id" = <dare_id></code>
 
