@@ -5,7 +5,7 @@ date: 2014-03-02 21:35:38 -0600
 comments: true
 categories:
 ---
-We were assigned an unbelievably thorough Javascript assessment on Friday. <!-- more -->It's now Sunday night and I have gotten through 36 of the 51 challenges so far. The last challenge I completed was on closures, and it was a doozy. So, in an effort to understand the concept better, I going to do my best to confuse erm... explain them to you and how they might be used practically.
+I started going through a fairly thorough Javascript assessment on Friday. <!-- more -->It's now Sunday night and I have gotten through 36 of the 51 challenges so far. The last challenge I completed was on closures, and it was a doozy. So, in an effort to understand the concept better, I going to do my best to confuse erm... explain them to you and how they might be used practically.
 
 When we declare local variables in a function in Javascript, after the function is run, those variables vanish. Take this example:
 
