@@ -4,7 +4,7 @@
   <title><![CDATA[Donovan Whitworth]]></title>
   <link href="http://dwhitworth.github.io/atom.xml" rel="self"/>
   <link href="http://dwhitworth.github.io/"/>
-  <updated>2014-04-26T18:16:22-07:00</updated>
+  <updated>2014-05-23T19:36:31-07:00</updated>
   <id>http://dwhitworth.github.io/</id>
   <author>
     <name><![CDATA[Donovan Whitworth]]></name>
@@ -215,7 +215,7 @@
     <link href="http://dwhitworth.github.io/blog/2014/03/02/javascript-closures-hopefully-explained/"/>
     <updated>2014-03-02T19:35:38-08:00</updated>
     <id>http://dwhitworth.github.io/blog/2014/03/02/javascript-closures-hopefully-explained</id>
-    <content type="html"><![CDATA[<p>We were assigned an unbelievably thorough Javascript assessment on Friday. <!-- more -->It&rsquo;s now Sunday night and I have gotten through 36 of the 51 challenges so far. The last challenge I completed was on closures, and it was a doozy. So, in an effort to understand the concept better, I going to do my best to confuse erm&hellip; explain them to you and how they might be used practically.</p>
+    <content type="html"><![CDATA[<p>I started going through a fairly thorough Javascript assessment on Friday. <!-- more -->It&rsquo;s now Sunday night and I have gotten through 36 of the 51 challenges so far. The last challenge I completed was on closures, and it was a doozy. So, in an effort to understand the concept better, I going to do my best to confuse erm&hellip; explain them to you and how they might be used practically.</p>
 
 <p>When we declare local variables in a function in Javascript, after the function is run, those variables vanish. Take this example:</p>
 
