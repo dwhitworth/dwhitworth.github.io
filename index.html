@@ -111,7 +111,7 @@
 
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/08/18/ruby-the-absolutely-100-percent-wrong-way-to-define-a-method/">Ruby the Absolutely 100 Percent Wrong Way to Define a Method</a></h1>
+      <h1 class="entry-title"><a href="/blog/2014/08/18/ruby-the-absolutely-100-percent-wrong-way-to-define-a-method/">Ruby: The Absolutely 100% Wrong Way to Define a Method</a></h1>
     
     
       <p class="meta">
@@ -136,8 +136,15 @@
   
 
 
-<time datetime="2014-08-18T00:00:00-07:00" pubdate data-updated="true"></time> - 
+<time datetime="2014-08-18T21:44:51-07:00" pubdate data-updated="true">Aug 18<span>th</span>, 2014</time> - 
         
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/apis/'>APIs</a>, <a class='category' href='/blog/categories/active-model-serializers/'>Active Model Serializers</a>, <a class='category' href='/blog/categories/json/'>JSON</a>, <a class='category' href='/blog/categories/rails/'>Rails</a>, <a class='category' href='/blog/categories/ruby/'>Ruby</a>
+  
+</span>
 
 
         
@@ -152,77 +159,12 @@
 
 <p><code>{ &ldquo;id&rdquo;: 1, &ldquo;description&rdquo;: &ldquo;This is a description&rdquo;, &ldquo;latitude&rdquo;: &ldquo;33.9425° N&rdquo;, longitude: &ldquo;33.9425° N&rdquo; }</code></p>
 
-<p>Surely, the names couldn&rsquo;t be that different in the iOS client that needed the data? Even so, it&rsquo;s pretty easy to transform data in ActiveModel::Serializer by defining custom attributes. Say you wanted to change the name of &ldquo;description&rdquo; to info in your JSON, you would just do this in your serializer:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">AreaSerializer</span> <span class="o">&lt;</span> <span class="ss">ActiveModel</span><span class="p">:</span><span class="ss">:Serializer</span>
-</span><span class='line'>  <span class="n">attributes</span> <span class="ss">:info</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">info</span>
-</span><span class='line'>    <span class="n">object</span><span class="o">.</span><span class="n">description</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Easy, right? Well, whoever created the iOS app decided that they wanted the JSON object to look something like this:</p>
-
-<p><code>
-{ &ldquo;Area info page (400 characters)&rdquo;: &ldquo;This is a description&rdquo;, &ldquo;center latitude&rdquo;: &ldquo;33.9425° N&rdquo;, &ldquo;center longitude&rdquo;: &ldquo;33.9425° N&rdquo; }</p>
-
-<p>It couldn&rsquo;t be changed, as the iOS app was using legacy code that no one wants to change, so the ummm&hellip; flexibility had to done on my end. Well, not only is that naming convention completely strange and eff&rsquo;d up, how do I make a method name with spaces in it (also completely wrong and eff&rsquo;d up)? Basically I need the above code to look like this:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">AreaSerializer</span> <span class="o">&lt;</span> <span class="ss">ActiveModel</span><span class="p">:</span><span class="ss">:Serializer</span>
-</span><span class='line'>  <span class="n">attributes</span> <span class="ss">:&quot;Area info page (400 characters)&quot;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">Area</span> <span class="n">info</span> <span class="n">page</span> <span class="p">(</span><span class="mi">400</span> <span class="n">characters</span><span class="p">)</span>
-</span><span class='line'>    <span class="n">object</span><span class="o">.</span><span class="n">description</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>One of the reasons I love Ruby (and one of the reasons you should be really careful, since Ruby lets you get away with shit like this)&hellip; define_method! Here&rsquo;s how you make really awful looking method names (kids, don&rsquo;t try this at home):</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">AreaSerializer</span> <span class="o">&lt;</span> <span class="ss">ActiveModel</span><span class="p">:</span><span class="ss">:Serializer</span>
-</span><span class='line'>  <span class="n">attributes</span> <span class="ss">:&quot;Area info page (400 characters)&quot;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">define_method</span><span class="p">(</span><span class="s2">&quot;Area info page (400 characters)&quot;</span><span class="p">)</span> <span class="k">do</span>
-</span><span class='line'>    <span class="n">object</span><span class="o">.</span><span class="n">description</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>And there you go! If you need to write some really horrible looking method names in Ruby, that&rsquo;s how you do it. Until next time&hellip;</p>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/08/18/ruby-the-absolutely-100-percent-wrong-way-to-define-a-method/">Read on &rarr;</a>
+    </footer>
   
 
 
@@ -236,7 +178,7 @@
 
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/04/26/sql-is-your-friend/">Sql Is Your Friend</a></h1>
+      <h1 class="entry-title"><a href="/blog/2014/04/26/sql-is-your-friend/">SQL Is Your Friend</a></h1>
     
     
       <p class="meta">
@@ -261,8 +203,15 @@
   
 
 
-<time datetime="2014-04-26T00:00:00-07:00" pubdate data-updated="true"></time> - 
+<time datetime="2014-04-26T16:36:52-07:00" pubdate data-updated="true">Apr 26<span>th</span>, 2014</time> - 
         
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/algorithms/'>Algorithms</a>, <a class='category' href='/blog/categories/postgresql/'>PostgreSQL</a>, <a class='category' href='/blog/categories/rails/'>Rails</a>, <a class='category' href='/blog/categories/ruby/'>Ruby</a>, <a class='category' href='/blog/categories/sql/'>SQL</a>
+  
+</span>
 
 
         
@@ -317,6 +266,13 @@
 
 <time datetime="2014-04-20T12:03:16-07:00" pubdate data-updated="true">Apr 20<span>th</span>, 2014</time> - 
         
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/javascript/'>JavaScript</a>
+  
+</span>
 
 
         
@@ -374,6 +330,13 @@
 <time datetime="2014-03-02T19:35:38-08:00" pubdate data-updated="true">Mar 2<span>nd</span>, 2014</time> - 
         
 
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/javascript/'>JavaScript</a>
+  
+</span>
+
 
         
       </p>
@@ -428,6 +391,13 @@
 <time datetime="2014-02-23T18:46:06-08:00" pubdate data-updated="true">Feb 23<span>rd</span>, 2014</time> - 
         
 
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/git/'>Git</a>
+  
+</span>
+
 
         
       </p>
@@ -481,6 +451,13 @@
 
 <time datetime="2014-02-16T17:29:43-08:00" pubdate data-updated="true">Feb 16<span>th</span>, 2014</time> - 
         
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/algorithms/'>Algorithms</a>, <a class='category' href='/blog/categories/ruby/'>Ruby</a>
+  
+</span>
 
 
         
@@ -748,11 +725,11 @@
     <ul class="recent_posts">
       
         <li>
-          <a href="/blog/2014/08/18/ruby-the-absolutely-100-percent-wrong-way-to-define-a-method/">Ruby The Absolutely 100 Percent Wrong Way To Define A Method</a>
+          <a href="/blog/2014/08/18/ruby-the-absolutely-100-percent-wrong-way-to-define-a-method/">Ruby: The absolutely 100% wrong way to define a method</a>
         </li>
       
         <li>
-          <a href="/blog/2014/04/26/sql-is-your-friend/">Sql Is Your Friend</a>
+          <a href="/blog/2014/04/26/sql-is-your-friend/">SQL Is Your Friend</a>
         </li>
       
         <li>

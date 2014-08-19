@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: JSON | Donovan Whitworth]]></title>
+  <link href="http://dwhitworth.github.io/blog/categories/json/atom.xml" rel="self"/>
+  <link href="http://dwhitworth.github.io/"/>
+  <updated>2014-08-18T22:22:43-07:00</updated>
+  <id>http://dwhitworth.github.io/</id>
+  <author>
+    <name><![CDATA[Donovan Whitworth]]></name>
+    <email><![CDATA[donovan.whitworth@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Ruby: The absolutely 100% wrong way to define a method]]></title>
+    <link href="http://dwhitworth.github.io/blog/2014/08/18/ruby-the-absolutely-100-percent-wrong-way-to-define-a-method/"/>
+    <updated>2014-08-18T21:44:51-07:00</updated>
+    <id>http://dwhitworth.github.io/blog/2014/08/18/ruby-the-absolutely-100-percent-wrong-way-to-define-a-method</id>
+    <content type="html"><![CDATA[<p>The app that I am building and maintaining contains travel and geographical information for a bunch of destinations around the World. I was tasked to build an API for our database that would serve some JSON to an iOS app. Simple enough. In the database that I created everything was pretty simply and logically named (so I thought), but I knew ahead of time that there was going to be some data transformation, so I decide to implement <a href="https://github.com/rails-api/active_model_serializers">ActiveModel::Serializers</a> for easy encapsulation and customization of the JSON object that I was delivering via my API.</p>
+
+<p>Without doing much, my app would deliver a JSON object that looked something like this:</p>
+
+<p><code>{ &ldquo;id&rdquo;: 1, &ldquo;description&rdquo;: &ldquo;This is a description&rdquo;, &ldquo;latitude&rdquo;: &ldquo;33.9425° N&rdquo;, longitude: &ldquo;33.9425° N&rdquo; }</code></p>
+
+<!-- more -->
+
+
+<p>Surely, the names couldn&rsquo;t be that different in the iOS client that needed the data? Even so, it&rsquo;s pretty easy to transform data in ActiveModel::Serializer by defining custom attributes. Say you wanted to change the name of &ldquo;description&rdquo; to info in your JSON, you would just do this in your serializer:
+``` ruby
+class AreaSerializer &lt; ActiveModel::Serializer
+  attributes :info</p>
+
+<p>  def info</p>
+
+<pre><code>object.description
+</code></pre>
+
+<p>  end</p>
+
+<p>end
+```
+Easy, right? Well, whoever created the iOS app decided that they wanted the JSON object to look something like this:</p>
+
+<p><code>
+{ &ldquo;Area info page (400 characters)&rdquo;: &ldquo;This is a description&rdquo;, &ldquo;center latitude&rdquo;: &ldquo;33.9425° N&rdquo;, &ldquo;center longitude&rdquo;: &ldquo;33.9425° N&rdquo; }</p>
+
+<p>It couldn&rsquo;t be changed, as the iOS app was using legacy code that no one wants to change, so the ummm&hellip; flexibility had to done on my end. Well, not only is that naming convention completely strange and eff&rsquo;d up, how do I make a method name with spaces in it (also completely wrong and eff&rsquo;d up)? Basically I need the above code to look like this:</p>
+
+<p>``` ruby
+class AreaSerializer &lt; ActiveModel::Serializer
+  attributes :&ldquo;Area info page (400 characters)&rdquo;</p>
+
+<p>  def Area info page (400 characters)</p>
+
+<pre><code>object.description
+</code></pre>
+
+<p>  end</p>
+
+<p>end
+```</p>
+
+<p>One of the reasons I love Ruby (and one of the reasons you should be really careful, since Ruby lets you get away with shit like this)&hellip; define_method! Here&rsquo;s how you make really awful looking method names (kids, don&rsquo;t try this at home):</p>
+
+<p>``` ruby
+class AreaSerializer &lt; ActiveModel::Serializer
+  attributes :&ldquo;Area info page (400 characters)&rdquo;</p>
+
+<p>  define_method(&ldquo;Area info page (400 characters)&rdquo;) do</p>
+
+<pre><code>object.description
+</code></pre>
+
+<p>  end</p>
+
+<p>end
+```
+And there you go! If you need to write some really horrible looking method names in Ruby, that&rsquo;s how you do it. Until next time&hellip;</p>
+]]></content>
+  </entry>
+  
+</feed>
