@@ -6,15 +6,15 @@ comments: true
 categories: [Ruby, JSON, Active Model Serializers, APIs, Rails]
 ---
 
-The app that I am building and maintaining contains travel and geographical information for a bunch of destinations around the World. I was tasked to build an API for our database that would serve some JSON to an iOS app. Simple enough. In the database that I created everything was pretty simply and logically named (so I thought), but I knew ahead of time that there was going to be some data transformation, so I decide to implement [ActiveModel::Serializers](https://github.com/rails-api/active_model_serializers) for easy encapsulation and customization of the JSON object that I was delivering via my API.
+The app that I am building and maintaining contains travel and geographical information for a bunch of destinations around the World. I was tasked to build an API that would serve some JSON info from our database to an iOS app requesting it. Simple enough. In the database that I created everything was pretty simply and logically named (so I thought), but I knew ahead of time that there was going to be some data transformation, so I decide to implement [ActiveModel::Serializers](https://github.com/rails-api/active_model_serializers) for easy encapsulation and customization of the JSON object that I was delivering via said API.
 
-Without doing much, my app would deliver a JSON object that looked something like this:
+Without changing anything, my app would deliver a JSON object that looked something like this:
 
 <code>{ "id": 1, "description": "This is a description", "latitude": "33.9425° N", longitude: "33.9425° N" }</code>
 
 <!-- more -->
 
-Surely, the names couldn't be that different in the iOS client that needed the data? Even so, it's pretty easy to transform data in ActiveModel::Serializer by defining custom attributes. Say you wanted to change the name of "description" to info in your JSON, you would just do this in your serializer:
+Surely, the names couldn't be that different in the iOS client that needed the data? Even so, it's pretty easy to transform data in ActiveModel::Serializer by defining custom attributes. Say you wanted to change the name of "description" to "info" in your JSON, you would just do this in your serializer:
 ``` ruby
 class AreaSerializer < ActiveModel::Serializer
   attributes :info
@@ -30,7 +30,7 @@ Easy, right? Well, whoever created the iOS app decided that they wanted the JSON
 <code>
 { "Area info page (400 characters)": "This is a description", "center latitude": "33.9425° N", "center longitude": "33.9425° N" }
 
-It couldn't be changed, as the iOS app was using legacy code that no one wants to change, so the ummm... flexibility had to done on my end. Well, not only is that naming convention completely strange and eff'd up, how do I make a method name with spaces in it (also completely wrong and eff'd up)? Basically I need the above code to look like this (which doesn't work, btw):
+It couldn't be changed on the iOS side, as that app didn't have any full-time Objective-C devs maintaining it, so the, ummm..., flexibility had to be on my end. Well, not only is that naming convention completely strange and eff'd up, how do I make a method name with spaces in it (also completely wrong and eff'd up)? Basically I need the above code to look like this (which doesn't work, btw):
 
 ``` ruby
 class AreaSerializer < ActiveModel::Serializer
