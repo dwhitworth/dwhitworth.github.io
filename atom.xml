@@ -4,7 +4,7 @@
   <title><![CDATA[Donovan Whitworth]]></title>
   <link href="http://dwhitworth.github.io/atom.xml" rel="self"/>
   <link href="http://dwhitworth.github.io/"/>
-  <updated>2014-05-23T19:36:31-07:00</updated>
+  <updated>2014-08-18T22:16:04-07:00</updated>
   <id>http://dwhitworth.github.io/</id>
   <author>
     <name><![CDATA[Donovan Whitworth]]></name>
@@ -14,9 +14,92 @@
 
   
   <entry>
-    <title type="html"><![CDATA[SQL Is Your Friend]]></title>
+    <title type="html"><![CDATA[Ruby The Absolutely 100 Percent Wrong Way To Define A Method]]></title>
+    <link href="http://dwhitworth.github.io/blog/2014/08/18/ruby-the-absolutely-100-percent-wrong-way-to-define-a-method/"/>
+    <updated>2014-08-18T00:00:00-07:00</updated>
+    <id>http://dwhitworth.github.io/blog/2014/08/18/ruby-the-absolutely-100-percent-wrong-way-to-define-a-method</id>
+    <content type="html"><![CDATA[<p>The app that I am building and maintaining contains travel and geographical information for a bunch of destinations around the World. I was tasked to build an API for our database that would serve some JSON to an iOS app. Simple enough. In the database that I created everything was pretty simply and logically named (so I thought), but I knew ahead of time that there was going to be some data transformation, so I decide to implement <a href="https://github.com/rails-api/active_model_serializers">ActiveModel::Serializers</a> for easy encapsulation and customization of the JSON object that I was delivering via my API.</p>
+
+<p>Without doing much, my app would deliver a JSON object that looked something like this:</p>
+
+<p><code>{ &ldquo;id&rdquo;: 1, &ldquo;description&rdquo;: &ldquo;This is a description&rdquo;, &ldquo;latitude&rdquo;: &ldquo;33.9425° N&rdquo;, longitude: &ldquo;33.9425° N&rdquo; }</code></p>
+
+<p>Surely, the names couldn&rsquo;t be that different in the iOS client that needed the data? Even so, it&rsquo;s pretty easy to transform data in ActiveModel::Serializer by defining custom attributes. Say you wanted to change the name of &ldquo;description&rdquo; to info in your JSON, you would just do this in your serializer:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">AreaSerializer</span> <span class="o">&lt;</span> <span class="ss">ActiveModel</span><span class="p">:</span><span class="ss">:Serializer</span>
+</span><span class='line'>  <span class="n">attributes</span> <span class="ss">:info</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">info</span>
+</span><span class='line'>    <span class="n">object</span><span class="o">.</span><span class="n">description</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Easy, right? Well, whoever created the iOS app decided that they wanted the JSON object to look something like this:</p>
+
+<p><code>
+{ &ldquo;Area info page (400 characters)&rdquo;: &ldquo;This is a description&rdquo;, &ldquo;center latitude&rdquo;: &ldquo;33.9425° N&rdquo;, &ldquo;center longitude&rdquo;: &ldquo;33.9425° N&rdquo; }</p>
+
+<p>It couldn&rsquo;t be changed, as the iOS app was using legacy code that no one wants to change, so the ummm&hellip; flexibility had to done on my end. Well, not only is that naming convention completely strange and eff&rsquo;d up, how do I make a method name with spaces in it (also completely wrong and eff&rsquo;d up)? Basically I need the above code to look like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">AreaSerializer</span> <span class="o">&lt;</span> <span class="ss">ActiveModel</span><span class="p">:</span><span class="ss">:Serializer</span>
+</span><span class='line'>  <span class="n">attributes</span> <span class="ss">:&quot;Area info page (400 characters)&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">Area</span> <span class="n">info</span> <span class="n">page</span> <span class="p">(</span><span class="mi">400</span> <span class="n">characters</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">object</span><span class="o">.</span><span class="n">description</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>One of the reasons I love Ruby (and one of the reasons you should be really careful, since Ruby lets you get away with shit like this)&hellip; define_method! Here&rsquo;s how you make really awful looking method names (kids, don&rsquo;t try this at home):</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">AreaSerializer</span> <span class="o">&lt;</span> <span class="ss">ActiveModel</span><span class="p">:</span><span class="ss">:Serializer</span>
+</span><span class='line'>  <span class="n">attributes</span> <span class="ss">:&quot;Area info page (400 characters)&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">define_method</span><span class="p">(</span><span class="s2">&quot;Area info page (400 characters)&quot;</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">object</span><span class="o">.</span><span class="n">description</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And there you go! If you need to write some really horrible looking method names in Ruby, that&rsquo;s how you do it. Until next time&hellip;</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Sql Is Your Friend]]></title>
     <link href="http://dwhitworth.github.io/blog/2014/04/26/sql-is-your-friend/"/>
-    <updated>2014-04-26T16:36:52-07:00</updated>
+    <updated>2014-04-26T00:00:00-07:00</updated>
     <id>http://dwhitworth.github.io/blog/2014/04/26/sql-is-your-friend</id>
     <content type="html"><![CDATA[<p>Our final project for MakerSquare was crowd-funding platform for public dares, challenges and acts of kindness. You can check it out here: <a href="http://we-dare-you.herokuapp.com">we-dare-you.herokuapp.com</a>. Every dare had multiple monetary contributions and we would sum up those contributions via a &ldquo;pot_size&rdquo; method. <!-- more --></p>
 
