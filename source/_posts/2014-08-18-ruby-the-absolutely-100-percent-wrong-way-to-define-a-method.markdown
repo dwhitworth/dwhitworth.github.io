@@ -30,7 +30,7 @@ Easy, right? Well, whoever created the iOS app decided that they wanted the JSON
 <code>
 { "Area info page (400 characters)": "This is a description", "center latitude": "33.9425° N", "center longitude": "33.9425° N" }
 
-It couldn't be changed, as the iOS app was using legacy code that no one wants to change, so the ummm... flexibility had to done on my end. Well, not only is that naming convention completely strange and eff'd up, how do I make a method name with spaces in it (also completely wrong and eff'd up)? Basically I need the above code to look like this:
+It couldn't be changed, as the iOS app was using legacy code that no one wants to change, so the ummm... flexibility had to done on my end. Well, not only is that naming convention completely strange and eff'd up, how do I make a method name with spaces in it (also completely wrong and eff'd up)? Basically I need the above code to look like this (which doesn't work, btw):
 
 ``` ruby
 class AreaSerializer < ActiveModel::Serializer
