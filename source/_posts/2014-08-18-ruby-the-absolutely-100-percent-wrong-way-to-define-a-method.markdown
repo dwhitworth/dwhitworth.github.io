@@ -3,7 +3,7 @@ layout: post
 title: "Ruby: The absolutely 100% wrong way to define a method"
 date: 2014-08-18 21:44:51 -0700
 comments: true
-categories: "Ruby", "JSON", "Active Model Serializers", "APIs", "Rails"
+categories: [Ruby, JSON, Active Model Serializers, APIs, Rails]
 ---
 
 The app that I am building and maintaining contains travel and geographical information for a bunch of destinations around the World. I was tasked to build an API for our database that would serve some JSON to an iOS app. Simple enough. In the database that I created everything was pretty simply and logically named (so I thought), but I knew ahead of time that there was going to be some data transformation, so I decide to implement [ActiveModel::Serializers](https://github.com/rails-api/active_model_serializers) for easy encapsulation and customization of the JSON object that I was delivering via my API.
@@ -11,6 +11,8 @@ The app that I am building and maintaining contains travel and geographical info
 Without doing much, my app would deliver a JSON object that looked something like this:
 
 <code>{ "id": 1, "description": "This is a description", "latitude": "33.9425° N", longitude: "33.9425° N" }</code>
+
+<!-- more -->
 
 Surely, the names couldn't be that different in the iOS client that needed the data? Even so, it's pretty easy to transform data in ActiveModel::Serializer by defining custom attributes. Say you wanted to change the name of "description" to info in your JSON, you would just do this in your serializer:
 ``` ruby

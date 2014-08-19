@@ -3,7 +3,7 @@ layout: post
 title: "SQL Is Your Friend"
 date: 2014-04-26 16:36:52 -0700
 comments: true
-categories: "Ruby", "SQL", "PostgreSQL", "Algorithms", "Rails"
+categories: [Ruby, SQL, PostgreSQL, Algorithms, Rails]
 ---
 
 Our final project for MakerSquare was crowd-funding platform for public dares, challenges and acts of kindness. You can check it out here: [we-dare-you.herokuapp.com](http://we-dare-you.herokuapp.com). Every dare had multiple monetary contributions and we would sum up those contributions via a "pot_size" method. <!-- more -->

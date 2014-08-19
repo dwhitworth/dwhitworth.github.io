@@ -3,7 +3,7 @@ layout: post
 title: "Blocks, Procs, Lambdas &amp; Closures in Ruby"
 date: 2014-04-20 14:03:16 -0500
 comments: true
-categories: "JavaScript"
+categories: [JavaScript]
 ---
 
 In JavaScript, we are quite used to the functional features of the language and creating closures. In Ruby, we do it all the time, but sometimes don't realize that we are creating closures and passing functions around.

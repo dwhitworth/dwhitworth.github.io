@@ -3,7 +3,7 @@ layout: post
 title: "git stash"
 date: 2014-02-23 20:46:06 -0600
 comments: true
-categories: "Git"
+categories: [Git]
 ---
 
 During this weekend's hackathon, our team split up duties when we were not pair programming. With over 50 issues, 90 commits and <!-- more -->30 branches, this means we had a s**t-ton of pull requests, code-review and merging, in our effort to apply best practices for version control.

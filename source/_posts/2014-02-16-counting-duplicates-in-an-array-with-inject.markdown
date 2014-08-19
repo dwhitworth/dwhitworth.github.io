@@ -3,7 +3,7 @@ layout: post
 title: "Ruby: counting duplicates in an array with inject"
 date: 2014-02-16 19:29:43 -0600
 comments: true
-categories: "Ruby", "Algorithms"
+categories: [Ruby, Algorithms]
 ---
 
 Earlier this week we were tasked with calculating the most and least popular colors, given an array of car objects. <!-- more -->We started with this array:
