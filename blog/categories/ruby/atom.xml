@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ruby | Donovan Whitworth]]></title>
   <link href="http://dwhitworth.github.io/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://dwhitworth.github.io/"/>
-  <updated>2014-08-18T22:22:43-07:00</updated>
+  <updated>2014-08-18T22:26:34-07:00</updated>
   <id>http://dwhitworth.github.io/</id>
   <author>
     <name><![CDATA[Donovan Whitworth]]></name>
@@ -46,7 +46,7 @@ Easy, right? Well, whoever created the iOS app decided that they wanted the JSON
 <p><code>
 { &ldquo;Area info page (400 characters)&rdquo;: &ldquo;This is a description&rdquo;, &ldquo;center latitude&rdquo;: &ldquo;33.9425° N&rdquo;, &ldquo;center longitude&rdquo;: &ldquo;33.9425° N&rdquo; }</p>
 
-<p>It couldn&rsquo;t be changed, as the iOS app was using legacy code that no one wants to change, so the ummm&hellip; flexibility had to done on my end. Well, not only is that naming convention completely strange and eff&rsquo;d up, how do I make a method name with spaces in it (also completely wrong and eff&rsquo;d up)? Basically I need the above code to look like this:</p>
+<p>It couldn&rsquo;t be changed, as the iOS app was using legacy code that no one wants to change, so the ummm&hellip; flexibility had to done on my end. Well, not only is that naming convention completely strange and eff&rsquo;d up, how do I make a method name with spaces in it (also completely wrong and eff&rsquo;d up)? Basically I need the above code to look like this (which doesn&rsquo;t work, btw):</p>
 
 <p>``` ruby
 class AreaSerializer &lt; ActiveModel::Serializer
