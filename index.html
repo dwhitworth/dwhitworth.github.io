@@ -153,9 +153,9 @@ posted in
   </header>
 
 
-  <div class="entry-content"><p>The app that I am building and maintaining contains travel and geographical information for a bunch of destinations around the World. I was tasked to build an API for our database that would serve some JSON to an iOS app. Simple enough. In the database that I created everything was pretty simply and logically named (so I thought), but I knew ahead of time that there was going to be some data transformation, so I decide to implement <a href="https://github.com/rails-api/active_model_serializers">ActiveModel::Serializers</a> for easy encapsulation and customization of the JSON object that I was delivering via my API.</p>
+  <div class="entry-content"><p>The app that I am building and maintaining contains travel and geographical information for a bunch of destinations around the World. I was tasked to build an API that would serve some JSON info from our database to an iOS app requesting it. Simple enough. In the database that I created everything was pretty simply and logically named (so I thought), but I knew ahead of time that there was going to be some data transformation, so I decide to implement <a href="https://github.com/rails-api/active_model_serializers">ActiveModel::Serializers</a> for easy encapsulation and customization of the JSON object that I was delivering via said API.</p>
 
-<p>Without doing much, my app would deliver a JSON object that looked something like this:</p>
+<p>Without changing anything, my app would deliver a JSON object that looked something like this:</p>
 
 <p><code>{ &ldquo;id&rdquo;: 1, &ldquo;description&rdquo;: &ldquo;This is a description&rdquo;, &ldquo;latitude&rdquo;: &ldquo;33.9425° N&rdquo;, longitude: &ldquo;33.9425° N&rdquo; }</code></p>
 
