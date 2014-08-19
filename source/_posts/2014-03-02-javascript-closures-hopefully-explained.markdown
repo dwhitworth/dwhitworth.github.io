@@ -3,7 +3,7 @@ layout: post
 title: "Javascript closures (hopefully) explained"
 date: 2014-03-02 21:35:38 -0600
 comments: true
-categories:
+categories: "JavaScript"
 ---
 I started going through a fairly thorough Javascript assessment on Friday. <!-- more -->It's now Sunday night and I have gotten through 36 of the 51 challenges so far. The last challenge I completed was on closures, and it was a doozy. So, in an effort to understand the concept better, I going to do my best to confuse erm... explain them to you and how they might be used practically.
 
@@ -91,4 +91,3 @@ With this html:
 When those divs are clicked, they will resize to their expected results. All thanks to a Javascript closure.
 
 Until next time.
-
