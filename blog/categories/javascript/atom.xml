@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: JavaScript | Donovan Whitworth]]></title>
+  <link href="http://dwhitworth.github.io/blog/categories/javascript/atom.xml" rel="self"/>
+  <link href="http://dwhitworth.github.io/"/>
+  <updated>2014-08-19T13:34:00-07:00</updated>
+  <id>http://dwhitworth.github.io/</id>
+  <author>
+    <name><![CDATA[Donovan Whitworth]]></name>
+    <email><![CDATA[donovan.whitworth@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Blocks, Procs, Lambdas &amp; Closures in Ruby]]></title>
+    <link href="http://dwhitworth.github.io/blog/2014/04/20/blocks-procs-lambdas-and-closures-in-ruby/"/>
+    <updated>2014-04-20T12:03:16-07:00</updated>
+    <id>http://dwhitworth.github.io/blog/2014/04/20/blocks-procs-lambdas-and-closures-in-ruby</id>
+    <content type="html"><![CDATA[<p>In JavaScript, we are quite used to the functional features of the language and creating closures. In Ruby, we do it all the time, but sometimes don&rsquo;t realize that we are creating closures and passing functions around.</p>
+
+<!-- more -->
+
+
+<p>Take our very common .map method in Ruby:</p>
+
+<p>```ruby</p>
+
+<p>array = [1,2,3,4,5] # => [1,2,3,4,5]</p>
+
+<p>array.map { |x| x * x } => [1,4,9,16,25]</p>
+
+<p>```
+We know that when we pass a block into the .map method it will return a new array based on the data in the original array provided and the code we put in the block. But, what&rsquo;s going on internally?</p>
+
+<p>Well, really all that&rsquo;s going on is our good, old .each method, with a yield to the block, then pushing those values into the new array. Let&rsquo;s try to rebuild the .map (we&rsquo;ll call it new_map) method from scratch:</p>
+
+<p>```ruby
+class Array</p>
+
+<p>  def new_map(&amp;block)</p>
+
+<pre><code>new_array = []
+
+self.each do |item|
+  new_array &lt;&lt; yield(item)
+end
+
+new_array
+</code></pre>
+
+<p>  end</p>
+
+<p>end
+```
+What makes the above an example of a closure? Well, a closure is basically a method(or function) that has a couple of properties:
+&ndash; It can be passed around, like any other object.
+&ndash; It remembers all the values of the variable it had when it was defined. So, even though they may no longer be in scope, the method still has access to those variables.</p>
+
+<p>Let&rsquo;s do a simple closure example using a Proc:</p>
+
+<p>```ruby
+def add_one
+  x = 0
+  Proc.new { x += 1 }
+end</p>
+
+<p>a = add_one
+a.call # => 1
+a.call # => 2</p>
+
+<p>b = add_one
+b.call # => 1
+```</p>
+
+<p>In the above example, the add_one method has a return value of a Proc that adds 1 to x, which was defined outside the Proc, but inside the method. So, your Proc has access to x, because it was available when that Proc was defined.</p>
+
+<p>Well, what&rsquo;s a lambda then and what makes it different than a Proc?</p>
+
+<p>First, let&rsquo;s see the syntax of Procs, vs Lambdas:</p>
+
+<p>```ruby</p>
+
+<p>a = Proc.new { |x| x * x} # this is a Proc that will return x<sup>2</sup> when called</p>
+
+<p>b = lambda { |x| x * x } # this is a lambda that will return x<sup>2</sup> when called</p>
+
+<p>c = &ndash;>(x) { x * x } # another way to define a lambda that will return x<sup>2</sup> when called
+```</p>
+
+<p>Here, we have defined a proc and a couple of lambdas, very similar to how we would define anonymous functions in JavaScript. What&rsquo;s the difference between procs and lambdas? Not much. If you call .class on a lambda, you will find that they are just procs. The only differences is that lambdas are a more strict form of a proc:
+&ndash; Lambdas are more strict with argument checking. With procs you can pass in the wrong number of arguments and will still execute, while lambdas will throw an error.
+&ndash; Lambdas can return a value with the <code>return</code> keyword.</p>
+
+<p>So, what&rsquo;s the point of using closures? In a pure functional language, there&rsquo;s a HUGE point to it. Functional languages are <em>stateless</em>, but closures are how you can make some state continue as long as the closure continues. In imperative languages like Ruby, the purpose is a little bit cloudier, but you can use lambdas and procs sometimes to make your code a bit more concise in certain situations.</p>
+
+<p>Bis später.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Javascript closures (hopefully) explained]]></title>
+    <link href="http://dwhitworth.github.io/blog/2014/03/02/javascript-closures-hopefully-explained/"/>
+    <updated>2014-03-02T19:35:38-08:00</updated>
+    <id>http://dwhitworth.github.io/blog/2014/03/02/javascript-closures-hopefully-explained</id>
+    <content type="html"><![CDATA[<p>I started going through a fairly thorough Javascript assessment on Friday. <!-- more -->It&rsquo;s now Sunday night and I have gotten through 36 of the 51 challenges so far. The last challenge I completed was on closures, and it was a doozy. So, in an effort to understand the concept better, I going to do my best to confuse erm&hellip; explain them to you and how they might be used practically.</p>
+
+<p>When we declare local variables in a function in Javascript, after the function is run, those variables vanish. Take this example:</p>
+
+<p>```javascript
+var myFunction = function (){
+  var x = &ldquo;superawesomelocalvariable&rdquo;;
+  console.log(&ldquo;I love my &rdquo; + x);
+};</p>
+
+<p>myFunction();
+```</p>
+
+<p>In the above example, after myFunction is run, we have no access to the variable x. Ok, now let&rsquo;s see a simple closure:</p>
+
+<p>```javascript
+var createAnAwesomeFunction = function(){
+  var x = &ldquo;superawesomelocalvariable&rdquo;;
+  function innerFunction(){</p>
+
+<pre><code>console.log("I love my " + x);
+</code></pre>
+
+<p>  };
+  return innerFunction;
+};</p>
+
+<p>var myFunction = createAnAwesomeFunction();
+myFunction();
+```</p>
+
+<p>So, in the above example, it&rsquo;s going to do the same thing as the first example. But, it&rsquo;s kind of counter-intuitive. The variable x should be gone, since createAnAwesomeFunction has already been run, and it only returns innerFunction. We receive a log to the console of &ldquo;I love my superawesomelocalvariable&rdquo; because myFunction has become a closure. A closure not only includes a function, but the entire environment that was available (including the variable x) when the closure was created. Pretty neat, eh?</p>
+
+<p>Ok, so how do we actually use this in the real world?</p>
+
+<p>Let&rsquo;s use a jQuery example:</p>
+
+<p>```javascript
+function divResize(size) {
+  return function() {</p>
+
+<pre><code>$(this).css('height', size + 'px');
+</code></pre>
+
+<p>  };
+}</p>
+
+<p>var div100 = divResize(100);
+var div200 = divResize(200);
+var div300 = divResize(300);</p>
+
+<p>$(&lsquo;.makeme100&rsquo;).on(&lsquo;click&rsquo;, div100);
+$(&lsquo;.makeme200&rsquo;).on(&lsquo;click&rsquo;, div200);
+$(&lsquo;.makeme300&rsquo;).on(&lsquo;click&rsquo;, div300);
+```</p>
+
+<p>With this html:</p>
+
+<p>```html
+<html>
+  <head>
+  </head>
+  <body></p>
+
+<pre><code>&lt;style&gt;
+.makeme100 {
+  background-color: blue;
+}
+.makeme200 {
+  background-color: purple;
+}
+.makeme300 {
+  background-color: orange;
+}
+&lt;/style&gt;
+
+&lt;div class="makeme100"&gt;
+  Make me 100 pixels high!
+&lt;/div&gt;
+&lt;div class="makeme200"&gt;
+  Make me 200 pixels high!
+&lt;/div&gt;
+&lt;div class="makeme300"&gt;
+  Make me 300 pixels high!
+&lt;/div&gt;
+
+&lt;script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"&gt;&lt;/script&gt;
+</code></pre>
+
+<p>  </body>
+</html>
+```
+When those divs are clicked, they will resize to their expected results. All thanks to a Javascript closure.</p>
+
+<p>Until next time.</p>
+]]></content>
+  </entry>
+  
+</feed>

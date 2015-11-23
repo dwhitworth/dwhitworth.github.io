@@ -1,0 +1,883 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Donovan Whitworth]]></title>
+  <link href="http://dwhitworth.github.io/atom.xml" rel="self"/>
+  <link href="http://dwhitworth.github.io/"/>
+  <updated>2014-08-19T13:34:00-07:00</updated>
+  <id>http://dwhitworth.github.io/</id>
+  <author>
+    <name><![CDATA[Donovan Whitworth]]></name>
+    <email><![CDATA[donovan.whitworth@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Ruby: The absolutely 100% wrong way to define a method]]></title>
+    <link href="http://dwhitworth.github.io/blog/2014/08/18/ruby-the-absolutely-100-percent-wrong-way-to-define-a-method/"/>
+    <updated>2014-08-18T21:44:51-07:00</updated>
+    <id>http://dwhitworth.github.io/blog/2014/08/18/ruby-the-absolutely-100-percent-wrong-way-to-define-a-method</id>
+    <content type="html"><![CDATA[<p>The app that I am building and maintaining contains travel and geographical information for a bunch of destinations around the World. I was tasked to build an API that would serve some JSON info from our database to an iOS app requesting it. Simple enough. In the database that I created everything was pretty simply and logically named (so I thought), but I knew ahead of time that there was going to be some data transformation, so I decide to implement <a href="https://github.com/rails-api/active_model_serializers">ActiveModel::Serializers</a> for easy encapsulation and customization of the JSON object that I was delivering via said API.</p>
+
+<p>Without changing anything, my app would deliver a JSON object that looked something like this:</p>
+
+<p><code>{ &ldquo;id&rdquo;: 1, &ldquo;description&rdquo;: &ldquo;This is a description&rdquo;, &ldquo;latitude&rdquo;: &ldquo;33.9425° N&rdquo;, longitude: &ldquo;33.9425° N&rdquo; }</code></p>
+
+<!-- more -->
+
+
+<p>Surely, the names couldn&rsquo;t be that different in the iOS client that needed the data? Even so, it&rsquo;s pretty easy to transform data in ActiveModel::Serializer by defining custom attributes. Say you wanted to change the name of &ldquo;description&rdquo; to &ldquo;info&rdquo; in your JSON, you would just do this in your serializer:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">AreaSerializer</span> <span class="o">&lt;</span> <span class="ss">ActiveModel</span><span class="p">:</span><span class="ss">:Serializer</span>
+</span><span class='line'>  <span class="n">attributes</span> <span class="ss">:info</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">info</span>
+</span><span class='line'>    <span class="n">object</span><span class="o">.</span><span class="n">description</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Easy, right? Well, whoever created the iOS app decided that they wanted the JSON object to look something like this:</p>
+
+<p><code>
+{ &ldquo;Area info page (400 characters)&rdquo;: &ldquo;This is a description&rdquo;, &ldquo;center latitude&rdquo;: &ldquo;33.9425° N&rdquo;, &ldquo;center longitude&rdquo;: &ldquo;33.9425° N&rdquo; }</p>
+
+<p>It couldn&rsquo;t be changed on the iOS side, as that app didn&rsquo;t have any full-time Objective-C devs maintaining it, so the, ummm&hellip;, flexibility had to be on my end. Well, not only is that naming convention completely strange and eff&rsquo;d up, how do I make a method name with spaces in it (also completely wrong and eff&rsquo;d up)? Basically I need the above code to look like this (which doesn&rsquo;t work, btw):</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">AreaSerializer</span> <span class="o">&lt;</span> <span class="ss">ActiveModel</span><span class="p">:</span><span class="ss">:Serializer</span>
+</span><span class='line'>  <span class="n">attributes</span> <span class="ss">:&quot;Area info page (400 characters)&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">Area</span> <span class="n">info</span> <span class="n">page</span> <span class="p">(</span><span class="mi">400</span> <span class="n">characters</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">object</span><span class="o">.</span><span class="n">description</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>One of the reasons I love Ruby (and one of the reasons you should be really careful, since Ruby lets you get away with shit like this)&hellip; define_method! Here&rsquo;s how you make really awful looking method names (kids, don&rsquo;t try this at home):</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">AreaSerializer</span> <span class="o">&lt;</span> <span class="ss">ActiveModel</span><span class="p">:</span><span class="ss">:Serializer</span>
+</span><span class='line'>  <span class="n">attributes</span> <span class="ss">:&quot;Area info page (400 characters)&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">define_method</span><span class="p">(</span><span class="s2">&quot;Area info page (400 characters)&quot;</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">object</span><span class="o">.</span><span class="n">description</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And there you go! If you need to write some really horrible looking method names in Ruby, that&rsquo;s how you do it. Until next time&hellip;</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[SQL Is Your Friend]]></title>
+    <link href="http://dwhitworth.github.io/blog/2014/04/26/sql-is-your-friend/"/>
+    <updated>2014-04-26T16:36:52-07:00</updated>
+    <id>http://dwhitworth.github.io/blog/2014/04/26/sql-is-your-friend</id>
+    <content type="html"><![CDATA[<p>Our final project for MakerSquare was crowd-funding platform for public dares, challenges and acts of kindness. You can check it out here: <a href="http://we-dare-you.herokuapp.com">we-dare-you.herokuapp.com</a>. Every dare had multiple monetary contributions and we would sum up those contributions via a &ldquo;pot_size&rdquo; method. <!-- more --></p>
+
+<p>When summing up multiple elements in an array, our go to method is Ruby&rsquo;s <code>inject</code> method, but sometimes we forget that SQL has some built in functionality that may be faster and ease the load on memory.</p>
+
+<p>We had 8 models with quite a few associations, but let&rsquo;s concentrate on two models:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Dare</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">has_many</span> <span class="ss">:contributions</span>
+</span><span class='line'>  <span class="c1"># ...</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">Contribution</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">belongs_to</span> <span class="ss">:dare</span>
+</span><span class='line'>  <span class="c1"># ...</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So, to get a pot size for a specific dare, we made a method that looked something like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">pot_size</span>
+</span><span class='line'>  <span class="nb">self</span><span class="o">.</span><span class="n">contributions</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span><span class="o">|</span> <span class="n">total</span><span class="p">,</span> <span class="n">contribution</span> <span class="o">|</span> <span class="n">total</span> <span class="o">+</span> <span class="n">contribution</span><span class="o">.</span><span class="n">amount</span> <span class="p">}</span><span class="o">.</span><span class="n">to_f</span> <span class="o">/</span> <span class="mi">100</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This should be refactored to:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">pot_size</span>
+</span><span class='line'>  <span class="nb">self</span><span class="o">.</span><span class="n">contributions</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:amount</span><span class="p">)</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="ss">:+</span><span class="p">)</span><span class="o">.</span><span class="n">to_f</span> <span class="o">/</span> <span class="mi">100</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Using this method, we use the has_many association to get all the contributions for a specific dare. The SQL generated looks something like this:</p>
+
+<p><code>SELECT &ldquo;amount&rdquo;.* FROM &ldquo;contributions&rdquo; WHERE &ldquo;contributions&rdquo;.&ldquo;dare_id&rdquo; = &lt;dare_id></code></p>
+
+<p>I seeded a database with 100,000 test contributions and the above method took 1.6 seconds and change. The SQL statement above is finding all the contributions and putting them into memory before adding up the amounts.</p>
+
+<p>A much more efficient way is to use SQL to do the work of summing the amounts. It will be much faster and use much less memory. We can refactor the &ldquo;pot_size&rdquo; method to look more like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">pot_size</span>
+</span><span class='line'>  <span class="nb">self</span><span class="o">.</span><span class="n">contributions</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="ss">:amount</span><span class="p">)</span><span class="o">.</span><span class="n">to_f</span> <span class="o">/</span> <span class="mi">100</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>It generated SQL that looked like this:</p>
+
+<p><code>SELECT SUM(&ldquo;contributions&rdquo;.&ldquo;amount&rdquo;) AS sum_id FROM &ldquo;contributions&rdquo; WHERE &ldquo;contributions&rdquo;.&ldquo;dare_id&rdquo; = &lt;dare_id></code></p>
+
+<p>Using the above method, we avoid pulling all those records into memory and let SQL sum up the amounts in one step. The above method took 17ms!</p>
+
+<p>The moral of the story is you don&rsquo;t <em>always</em> have to use Ruby methods when manipulating your ActiveRecord objects, sometimes good old SQL is faster and uses less memory.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Blocks, Procs, Lambdas &amp; Closures in Ruby]]></title>
+    <link href="http://dwhitworth.github.io/blog/2014/04/20/blocks-procs-lambdas-and-closures-in-ruby/"/>
+    <updated>2014-04-20T12:03:16-07:00</updated>
+    <id>http://dwhitworth.github.io/blog/2014/04/20/blocks-procs-lambdas-and-closures-in-ruby</id>
+    <content type="html"><![CDATA[<p>In JavaScript, we are quite used to the functional features of the language and creating closures. In Ruby, we do it all the time, but sometimes don&rsquo;t realize that we are creating closures and passing functions around.</p>
+
+<!-- more -->
+
+
+<p>Take our very common .map method in Ruby:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">array</span> <span class="o">=</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="o">]</span> <span class="c1"># =&gt; [1,2,3,4,5]</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">array</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="p">}</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">25</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We know that when we pass a block into the .map method it will return a new array based on the data in the original array provided and the code we put in the block. But, what&rsquo;s going on internally?</p>
+
+<p>Well, really all that&rsquo;s going on is our good, old .each method, with a yield to the block, then pushing those values into the new array. Let&rsquo;s try to rebuild the .map (we&rsquo;ll call it new_map) method from scratch:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Array</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">new_map</span><span class="p">(</span><span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">new_array</span> <span class="o">=</span> <span class="o">[]</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nb">self</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">item</span><span class="o">|</span>
+</span><span class='line'>      <span class="n">new_array</span> <span class="o">&lt;&lt;</span> <span class="k">yield</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">new_array</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>What makes the above an example of a closure? Well, a closure is basically a method(or function) that has a couple of properties:
+&ndash; It can be passed around, like any other object.
+&ndash; It remembers all the values of the variable it had when it was defined. So, even though they may no longer be in scope, the method still has access to those variables.</p>
+
+<p>Let&rsquo;s do a simple closure example using a Proc:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">add_one</span>
+</span><span class='line'>  <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>  <span class="no">Proc</span><span class="o">.</span><span class="n">new</span> <span class="p">{</span> <span class="n">x</span> <span class="o">+=</span> <span class="mi">1</span> <span class="p">}</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">a</span> <span class="o">=</span> <span class="n">add_one</span>
+</span><span class='line'><span class="n">a</span><span class="o">.</span><span class="n">call</span> <span class="c1"># =&gt; 1</span>
+</span><span class='line'><span class="n">a</span><span class="o">.</span><span class="n">call</span> <span class="c1"># =&gt; 2</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">b</span> <span class="o">=</span> <span class="n">add_one</span>
+</span><span class='line'><span class="n">b</span><span class="o">.</span><span class="n">call</span> <span class="c1"># =&gt; 1</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In the above example, the add_one method has a return value of a Proc that adds 1 to x, which was defined outside the Proc, but inside the method. So, your Proc has access to x, because it was available when that Proc was defined.</p>
+
+<p>Well, what&rsquo;s a lambda then and what makes it different than a Proc?</p>
+
+<p>First, let&rsquo;s see the syntax of Procs, vs Lambdas:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">a</span> <span class="o">=</span> <span class="no">Proc</span><span class="o">.</span><span class="n">new</span> <span class="p">{</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span><span class="p">}</span> <span class="c1"># this is a Proc that will return x^2 when called</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">b</span> <span class="o">=</span> <span class="nb">lambda</span> <span class="p">{</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="p">}</span> <span class="c1"># this is a lambda that will return x^2 when called</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">c</span> <span class="o">=</span> <span class="o">-&gt;</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="p">{</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="p">}</span> <span class="c1"># another way to define a lambda that will return x^2 when called</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Here, we have defined a proc and a couple of lambdas, very similar to how we would define anonymous functions in JavaScript. What&rsquo;s the difference between procs and lambdas? Not much. If you call .class on a lambda, you will find that they are just procs. The only differences is that lambdas are a more strict form of a proc:
+&ndash; Lambdas are more strict with argument checking. With procs you can pass in the wrong number of arguments and will still execute, while lambdas will throw an error.
+&ndash; Lambdas can return a value with the <code>return</code> keyword.</p>
+
+<p>So, what&rsquo;s the point of using closures? In a pure functional language, there&rsquo;s a HUGE point to it. Functional languages are <em>stateless</em>, but closures are how you can make some state continue as long as the closure continues. In imperative languages like Ruby, the purpose is a little bit cloudier, but you can use lambdas and procs sometimes to make your code a bit more concise in certain situations.</p>
+
+<p>Bis später.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Javascript closures (hopefully) explained]]></title>
+    <link href="http://dwhitworth.github.io/blog/2014/03/02/javascript-closures-hopefully-explained/"/>
+    <updated>2014-03-02T19:35:38-08:00</updated>
+    <id>http://dwhitworth.github.io/blog/2014/03/02/javascript-closures-hopefully-explained</id>
+    <content type="html"><![CDATA[<p>I started going through a fairly thorough Javascript assessment on Friday. <!-- more -->It&rsquo;s now Sunday night and I have gotten through 36 of the 51 challenges so far. The last challenge I completed was on closures, and it was a doozy. So, in an effort to understand the concept better, I going to do my best to confuse erm&hellip; explain them to you and how they might be used practically.</p>
+
+<p>When we declare local variables in a function in Javascript, after the function is run, those variables vanish. Take this example:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">myFunction</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(){</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="s2">&quot;superawesomelocalvariable&quot;</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;I love my &quot;</span> <span class="o">+</span> <span class="nx">x</span><span class="p">);</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">myFunction</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In the above example, after myFunction is run, we have no access to the variable x. Ok, now let&rsquo;s see a simple closure:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">createAnAwesomeFunction</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="s2">&quot;superawesomelocalvariable&quot;</span><span class="p">;</span>
+</span><span class='line'>  <span class="kd">function</span> <span class="nx">innerFunction</span><span class="p">(){</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;I love my &quot;</span> <span class="o">+</span> <span class="nx">x</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">innerFunction</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">myFunction</span> <span class="o">=</span> <span class="nx">createAnAwesomeFunction</span><span class="p">();</span>
+</span><span class='line'><span class="nx">myFunction</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So, in the above example, it&rsquo;s going to do the same thing as the first example. But, it&rsquo;s kind of counter-intuitive. The variable x should be gone, since createAnAwesomeFunction has already been run, and it only returns innerFunction. We receive a log to the console of &ldquo;I love my superawesomelocalvariable&rdquo; because myFunction has become a closure. A closure not only includes a function, but the entire environment that was available (including the variable x) when the closure was created. Pretty neat, eh?</p>
+
+<p>Ok, so how do we actually use this in the real world?</p>
+
+<p>Let&rsquo;s use a jQuery example:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">divResize</span><span class="p">(</span><span class="nx">size</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">css</span><span class="p">(</span><span class="s1">&#39;height&#39;</span><span class="p">,</span> <span class="nx">size</span> <span class="o">+</span> <span class="s1">&#39;px&#39;</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">div100</span> <span class="o">=</span> <span class="nx">divResize</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">div200</span> <span class="o">=</span> <span class="nx">divResize</span><span class="p">(</span><span class="mi">200</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">div300</span> <span class="o">=</span> <span class="nx">divResize</span><span class="p">(</span><span class="mi">300</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.makeme100&#39;</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="nx">div100</span><span class="p">);</span>
+</span><span class='line'><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.makeme200&#39;</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="nx">div200</span><span class="p">);</span>
+</span><span class='line'><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.makeme300&#39;</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="nx">div300</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>With this html:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;html&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;head&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/head&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;body&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;style&gt;</span>
+</span><span class='line'>    <span class="nc">.makeme100</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">background-color</span><span class="o">:</span> <span class="nb">blue</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nc">.makeme200</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">background-color</span><span class="o">:</span> <span class="nb">purple</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nc">.makeme300</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">background-color</span><span class="o">:</span> <span class="nb">orange</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nt">&lt;/style&gt;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;makeme100&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      Make me 100 pixels high!
+</span><span class='line'>    <span class="nt">&lt;/div&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;makeme200&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      Make me 200 pixels high!
+</span><span class='line'>    <span class="nt">&lt;/div&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;makeme300&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      Make me 300 pixels high!
+</span><span class='line'>    <span class="nt">&lt;/div&gt;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/body&gt;</span>
+</span><span class='line'><span class="nt">&lt;/html&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>When those divs are clicked, they will resize to their expected results. All thanks to a Javascript closure.</p>
+
+<p>Until next time.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[git stash]]></title>
+    <link href="http://dwhitworth.github.io/blog/2014/02/23/git-stash/"/>
+    <updated>2014-02-23T18:46:06-08:00</updated>
+    <id>http://dwhitworth.github.io/blog/2014/02/23/git-stash</id>
+    <content type="html"><![CDATA[<p>During this weekend&rsquo;s hackathon, our team split up duties when we were not pair programming. With over 50 issues, 90 commits and <!-- more -->30 branches, this means we had a s**t-ton of pull requests, code-review and merging, in our effort to apply best practices for version control.</p>
+
+<p>When we had merge conflicts, Git suggested we stash our changes, pull down the most recent changes, then merge our branch and resolve merge issues before pushing.</p>
+
+<p>Great, but I had no idea what git stash was.</p>
+
+<p>Well, in plain language, git warns you that if you pull a branch, you better be ready for it to overwrite everything you&rsquo;ve just done unless you take certain steps:</p>
+
+<ul>
+<li><p>Discard your changes: You could use <code>$ git clean</code> or <code>$ git reset –hard</code> to do this, this would make all your local changes disappear.</p></li>
+<li><p>Ignore your changes: <code>$ git checkout</code> would keep any changes you made locally that do not conflict with the incoming merge, but you will lose any local changes that do have merge conflicts.</p></li>
+<li><p>Set your changes aside: <code>$ git stash</code> hides your local changes so you can pull down the most recent master, then &lsquo;unstash&rsquo; your changes and resolve merge issues locally.</p></li>
+</ul>
+
+
+<p>So, here is what my normal workflow looked like if I came across a merge conflict:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>git stash
+</span><span class='line'><span class="nv">$ </span>git pull
+</span><span class='line'><span class="nv">$ </span>git stash apply
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You can stash multiple times, but it can get pretty messy. If you have multiple stashes, type <code>$ git list</code> to get a list of your stashes, the output would look something like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>stash@<span class="o">{</span>0<span class="o">}</span>: WIP on master: 049d078 added the index file
+</span><span class='line'>stash@<span class="o">{</span>1<span class="o">}</span>: WIP on master: c264051... Revert <span class="s2">&quot;added file_size&quot;</span>
+</span><span class='line'>stash@<span class="o">{</span>2<span class="o">}</span>: WIP on master: 21d80a5... added number to log
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If this is the case, simply using <code>$ git stash</code> would only apply the most recent stash, so if you wanted to apply a different commit, you would type <code>$ git stash apply stash@{2}</code>, or whatever number corresponds to the stash you want to apply.</p>
+
+<p>Bye for now :)</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Ruby: counting duplicates in an array with inject]]></title>
+    <link href="http://dwhitworth.github.io/blog/2014/02/16/counting-duplicates-in-an-array-with-inject/"/>
+    <updated>2014-02-16T17:29:43-08:00</updated>
+    <id>http://dwhitworth.github.io/blog/2014/02/16/counting-duplicates-in-an-array-with-inject</id>
+    <content type="html"><![CDATA[<p>Earlier this week we were tasked with calculating the most and least popular colors, given an array of car objects. <!-- more -->We started with this array:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="vi">@cars</span> <span class="o">=</span> <span class="o">[]</span>
+</span><span class='line'><span class="mi">3</span><span class="o">.</span><span class="n">times</span> <span class="p">{</span> <span class="vi">@cars</span> <span class="o">&lt;&lt;</span> <span class="no">Car</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;black&#39;</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'><span class="mi">5</span><span class="o">.</span><span class="n">times</span> <span class="p">{</span> <span class="vi">@cars</span> <span class="o">&lt;&lt;</span> <span class="no">Car</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;silver&#39;</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'><span class="mi">2</span><span class="o">.</span><span class="n">times</span> <span class="p">{</span> <span class="vi">@cars</span> <span class="o">&lt;&lt;</span> <span class="no">Car</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;white&#39;</span><span class="p">)</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We needed to make methods that would return the most popular color (5 silver cars) and the least popular (2 white cars). The first thing I did was make a new array from the array of car objects (using the .map method) populated with just colors. Like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="vi">@colors</span> <span class="o">=</span> <span class="vi">@cars</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">car</span><span class="o">|</span> <span class="n">car</span><span class="o">.</span><span class="n">color</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If you puts that array it would look like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">[</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="s1">&#39;silver&#39;</span><span class="p">,</span> <span class="s1">&#39;silver&#39;</span><span class="p">,</span> <span class="s1">&#39;silver&#39;</span><span class="p">,</span> <span class="s1">&#39;silver&#39;</span><span class="p">,</span> <span class="s1">&#39;silver&#39;</span><span class="p">,</span> <span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="s2">&quot;white&quot;</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So, now how do you get a count of all items in that array, incremented every time you hit a duplicate?</p>
+
+<p>.inject</p>
+
+<p>First, let&rsquo;s talk about .inject. Ruby docs says .inject:</p>
+
+<blockquote><p>Combines all elements of enum by applying a binary operation, specified by a block or a symbol that names a method or operator.</p>
+
+<p>If you specify a block, then for each element in enum the block is passed an accumulator value and the element. At the end of the iteration, the final value of memo is the return value for the method.</p></blockquote>
+
+<p>whaahuhhh?</p>
+
+<p>Well, let&rsquo;s break it down by using the classic example of .inject. To obtain a sum of each element in an array you could do this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="o">].</span><span class="n">inject</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">item</span><span class="p">,</span> <span class="n">element</span><span class="o">|</span> <span class="n">item</span> <span class="o">+</span> <span class="n">element</span> <span class="p">}</span> <span class="c1"># =&gt; 15</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The argument you pass into <code>.inject(0)</code> is then passed into the <code>item</code> variable, which is then added to the first <code>element</code> in the array. Then the return value of the block is passed back into the block as <code>item</code>. This is done for each element in the array, leaving you with a sum of the numbers.</p>
+
+<p>So, back to our array of colors. How do I turn that into <code>{&ldquo;black&rdquo; => 3, &ldquo;silver&rdquo; => 5, &ldquo;white&rdquo; => 2}</code>?</p>
+
+<p>Well, if I use <code>Hash.new(0)</code> as the first accumulator value, that will make a new hash and the default values for each key you pass in will be 0. Then, everytime I pass a duplicate into that hash, I just increment the value for that given key, then return the entire hash back into the accumulator. Like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="vi">@frequency</span> <span class="o">=</span> <span class="vi">@colors</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="no">Hash</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="k">do</span> <span class="o">|</span><span class="nb">hash</span><span class="p">,</span> <span class="n">key</span><span class="o">|</span>
+</span><span class='line'>    <span class="nb">hash</span><span class="o">[</span><span class="n">key</span><span class="o">]</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>    <span class="nb">hash</span>
+</span><span class='line'>    <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So, for each element of the @colors array, we inject a hash with the element becoming the key, and everytime that key is passed into the block, we increment the value. Voila!</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="p">{</span><span class="s2">&quot;black&quot;</span> <span class="o">=&gt;</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;silver&quot;</span> <span class="o">=&gt;</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;white&quot;</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now I can access the lowest and/or highest values in the array using the <code>min_by</code> or <code>max_by</code> methods for a hash.</p>
+
+<p>Until next time&hellip;</p>
+
+<blockquote><p>If you end up with a boring miserable life because you listened to your mom, your dad, your teacher, your priest, or some guy on television telling you how to do your shit, then you deserve it.</p>
+
+<p>- Frank Zappa</p></blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Y'all looking to score...]]></title>
+    <link href="http://dwhitworth.github.io/blog/2014/02/09/yall-looking-to-score-dot-dot-dot/"/>
+    <updated>2014-02-09T20:02:43-08:00</updated>
+    <id>http://dwhitworth.github.io/blog/2014/02/09/yall-looking-to-score-dot-dot-dot</id>
+    <content type="html"><![CDATA[<p>&ldquo;Y&#8217;all looking to score some crack?&rdquo;</p>
+
+<p>That&rsquo;s what was proposed to me and a member of my cohort at the bus stop yesterday. An interesting start to an otherwise awesome weekend.</p>
+
+<!-- more -->
+
+
+<p>We were going at it pretty hard all week and Saturday. The exercises in class were challenging, but many of the cohort still have yet to finish Friday&rsquo;s assignment, which involved using rSpec &ndash; the tests were pre-written &ndash; to build a Library application in Ruby.</p>
+
+<p>I was one of maybe a handful that finished the project on Friday afternoon, but I don&rsquo;t think it necessarily indicates that I am further along than most &hellip; I just happened to finish. I already received the review from one of our instructors, and he said that I did a decent job, but there are some flaws in my logic that can be shored up.</p>
+
+<p>Here were the requirements for the Library app:</p>
+
+<ul>
+<li>A Book should be able to be marked as checked_out</li>
+<li>You should be able to check a Book&rsquo;s status (e.g. available or checked out)</li>
+<li>You should be able to add new Books to a Library</li>
+<li>A Borrower should be able to check out a Book</li>
+<li>Checked-out Books should be associated with a Borrower</li>
+<li>Borrowers should be able to check Books back in to the Library (when they&rsquo;re finished with them)</li>
+<li>A Borrower should not be able to check out more than two Books at any given time</li>
+<li>The Library should be able to list available books and borrowed books</li>
+</ul>
+
+
+<p>Here&rsquo;s some of the code:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Book</span>
+</span><span class='line'>  <span class="kp">attr_reader</span> <span class="ss">:author</span><span class="p">,</span> <span class="ss">:title</span><span class="p">,</span> <span class="ss">:id</span><span class="p">,</span> <span class="ss">:status</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">,</span> <span class="n">author</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">,</span> <span class="nb">id</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@author</span> <span class="o">=</span> <span class="n">author</span>
+</span><span class='line'>    <span class="vi">@title</span> <span class="o">=</span> <span class="n">title</span>
+</span><span class='line'>    <span class="vi">@id</span> <span class="o">=</span> <span class="nb">id</span>
+</span><span class='line'>    <span class="vi">@status</span> <span class="o">=</span> <span class="s1">&#39;available&#39;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">check_out</span>
+</span><span class='line'>    <span class="k">if</span> <span class="vi">@status</span> <span class="o">==</span> <span class="s1">&#39;checked_out&#39;</span>
+</span><span class='line'>      <span class="kp">false</span>
+</span><span class='line'>    <span class="k">else</span>
+</span><span class='line'>      <span class="vi">@status</span> <span class="o">=</span> <span class="s1">&#39;checked_out&#39;</span>
+</span><span class='line'>      <span class="kp">true</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">check_in</span>
+</span><span class='line'>    <span class="vi">@status</span> <span class="o">=</span> <span class="s1">&#39;available&#39;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">Borrower</span>
+</span><span class='line'>  <span class="kp">attr_accessor</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:count</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@name</span> <span class="o">=</span> <span class="nb">name</span>
+</span><span class='line'>    <span class="vi">@count</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">Library</span>
+</span><span class='line'>  <span class="kp">attr_accessor</span> <span class="ss">:available_books</span><span class="p">,</span> <span class="ss">:borrowed_books</span>
+</span><span class='line'>  <span class="kp">attr_reader</span> <span class="ss">:books</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="nb">name</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@books</span> <span class="o">=</span> <span class="o">[]</span>
+</span><span class='line'>    <span class="vi">@available_books</span> <span class="o">=</span> <span class="o">[]</span>
+</span><span class='line'>    <span class="vi">@borrowed_books</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">register_new_book</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">author</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@books</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="no">Book</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">author</span><span class="p">,</span> <span class="n">books</span><span class="o">.</span><span class="n">count</span><span class="p">))</span>
+</span><span class='line'>    <span class="vi">@available_books</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="no">Book</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">author</span><span class="p">,</span> <span class="n">books</span><span class="o">.</span><span class="n">count</span><span class="p">))</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">check_out_book</span><span class="p">(</span><span class="n">book_id</span><span class="p">,</span> <span class="n">borrower</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">borrower</span><span class="o">.</span><span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">borrower</span><span class="o">.</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">2</span>
+</span><span class='line'>      <span class="kp">nil</span>
+</span><span class='line'>    <span class="k">else</span>
+</span><span class='line'>      <span class="k">if</span> <span class="vi">@books</span><span class="o">[</span><span class="n">book_id</span><span class="o">].</span><span class="n">status</span> <span class="o">==</span> <span class="s1">&#39;available&#39;</span>
+</span><span class='line'>        <span class="vi">@books</span><span class="o">[</span><span class="n">book_id</span><span class="o">].</span><span class="n">check_out</span>
+</span><span class='line'>        <span class="vi">@borrower</span> <span class="o">=</span> <span class="n">borrower</span>
+</span><span class='line'>        <span class="vi">@gone</span> <span class="o">=</span> <span class="vi">@available_books</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">book_id</span><span class="p">)</span>
+</span><span class='line'>        <span class="c1"># @borrowed_books.push @gone</span>
+</span><span class='line'>        <span class="vi">@books</span><span class="o">[</span><span class="n">book_id</span><span class="o">]</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">check_in_book</span><span class="p">(</span><span class="n">book</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">book</span><span class="o">.</span><span class="n">check_in</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">get_borrower</span><span class="p">(</span><span class="n">book</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@borrower</span><span class="o">.</span><span class="n">name</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I used an array to hold the books, and used the array index as the book id &hellip;.. lame. If the Library decided to remove some books, everything would shift down and the id&rsquo;s would change. A hash would have been a better solution and I could use something like <code>@books.find {|book| book.id == book_id}</code> to access the id. I could have used a counter for the book&rsquo;s id and incremented the counter everytime a book was added. Oh well, next time!</p>
+
+<p>I&rsquo;m looking forward to this coming week.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[MakerSquare Day 1]]></title>
+    <link href="http://dwhitworth.github.io/blog/2014/02/04/makersquare-day-1/"/>
+    <updated>2014-02-04T19:09:00-08:00</updated>
+    <id>http://dwhitworth.github.io/blog/2014/02/04/makersquare-day-1</id>
+    <content type="html"><![CDATA[<p>So, I got through the first day of MakerSquare.</p>
+
+<p>We went through introductions and course structure and an open Q&amp;A with the founders, instructors and a couple of alumni. I have been truly impressed with what the students have been able to create after 10 grueling weeks here.</p>
+
+<!-- more -->
+
+
+<p>After the introductions, we went on to setting up our dev environments on our individual machines. In addition to making sure we had the basics installed (Sublime Text, iTerm2, etc), it involved setting up some command line tools, virtual machines and other applications to make our dev lives a bit more productive.</p>
+
+<p>Later, we went through a short tutorial on Git and GitHub, and although it was covered in the pre-work and most of it was review, I definitely learned that I have to break some bad habits.</p>
+
+<p>For example, I am using Git for this blog, and when I add files to my repository, I have been using the <code>git add .</code> command&hellip;. Wrong!</p>
+
+<p><code>git add .</code> blindly adds any file in the directory to your commit, so that means it&rsquo;s too easy to add files you didn&rsquo;t want to commit to your repository. It&rsquo;s better to use <code>git add [filename]</code> or even <code>git add -p</code>, which will give you a yes/no confirmation for each file it adds to your commit.</p>
+
+<p>The second half of the day was doing some challenges in Ruby. I found these to be fairly trivial, but good review nonetheless. I imagine tomorrow will be harder.</p>
+
+<p>I&rsquo;ll sleep better tonight &hellip; I hope.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Git...]]></title>
+    <link href="http://dwhitworth.github.io/blog/2014/02/01/git-dot-dot-dot/"/>
+    <updated>2014-02-01T10:09:47-08:00</updated>
+    <id>http://dwhitworth.github.io/blog/2014/02/01/git-dot-dot-dot</id>
+    <content type="html"><![CDATA[<p><code>git push my arse to Austin!</code></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Brrr]]></title>
+    <link href="http://dwhitworth.github.io/blog/2014/01/23/brrr/"/>
+    <updated>2014-01-23T20:25:49-08:00</updated>
+    <id>http://dwhitworth.github.io/blog/2014/01/23/brrr</id>
+    <content type="html"><![CDATA[<p>Where I am now&hellip;</p>
+
+<!-- more -->
+
+
+<p><img src="http://dwhitworth.github.io/images/photo-2.png" alt="Weather in LA" /></p>
+
+<p>Where I&rsquo;ll be in two weeks&hellip;
+<img src="http://dwhitworth.github.io/images/photo-1.png" alt="Weather in Austin" /></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Hello World]]></title>
+    <link href="http://dwhitworth.github.io/blog/2014/01/21/hello-world/"/>
+    <updated>2014-01-21T20:25:35-08:00</updated>
+    <id>http://dwhitworth.github.io/blog/2014/01/21/hello-world</id>
+    <content type="html"><![CDATA[<p>In a few days I&rsquo;ll be heading to Austin to attend an immersive, boot-camp style course in full stack Web development called <a href="http://www.themakersquare.com">MakerSquare</a>.</p>
+
+<!-- more -->
+
+
+<p>I&rsquo;m beyond excited, as we&rsquo;ll be covering some great tools and technologies:</p>
+
+<ul>
+<li>Ruby &amp; Ruby on Rails</li>
+<li>JavaScript</li>
+<li>HTML and CSS</li>
+<li>jQuery</li>
+<li>Sinatra</li>
+<li>backbone.js and riot.js</li>
+<li>APIs</li>
+<li>SQL (I imagine SQLite and PostgreSQL)</li>
+<li>Git</li>
+</ul>
+
+
+<p>and tons more. We&rsquo;ll spend 10+ hours a day, every day, for 10 weeks learning technologies, building projects, networking, participating in hackathons, etc. Hopefuly, the 400+ hours I have spent in self-study and the 800+ hours I&rsquo;ll spend at MakerSquare will have given me enough knowledge to build some cool apps, and allow me to be useful to someone as a professional (junior) software engineer somewhere.</p>
+
+<p>I&rsquo;ve been doing self-study since July and here are some of the resources I have completed in the past 6 months:</p>
+
+<p>Books:</p>
+
+<ul>
+<li><em>Learn To Program</em> by Chris Pine</li>
+<li><em>CLI The Hard Way</em> by Zed A. Shaw</li>
+<li><em>Learn Ruby The Hard Way</em> by Zed A. Shaw</li>
+<li><em>Pragmatic Thinking &amp; Learning</em> by Andy Hunt</li>
+<li><em>Programming Ruby</em> (The &ldquo;Pickaxe&rdquo;) by Dave Thomas with Chad Fowler and Andy Hunt</li>
+<li><em>Practical Object-Oriented Design In Ruby</em> by Sandi Metz</li>
+<li><em>Eloquent Javascript</em> by Marijn Haverbeke</li>
+<li><em>Eloquent Ruby</em> by Russ Olsen</li>
+</ul>
+
+
+<p>Online Resources:</p>
+
+<p><a href="http://codecademy.com">CodeAcademy</a> &ndash; I&rsquo;ve finished the Web Fundamentals, JavaScript, jQuery and Ruby tracks.</p>
+
+<p><a href="http://codeschool.com">Code School</a> &ndash; Try Ruby, Ruby Bits I and II, Rails for Zombies I and II, JavaScript Road Trip I, II and III, CSS Cross Country, Try Git, Try jQuery.</p>
+
+<p><a href="http://teamtreehouse.com">Team Treehouse</a> &ndash; Earned over 75 achievements including courses on Ruby, Rails, JS, SQL, HTML and CSS</p>
+
+<p><a href="http://rubymonk.org">Ruby Monk</a> &ndash; Finished the Ruby Primer</p>
+
+<p>I&rsquo;ve also gone through a few tutorials on regular expressions, and some code challenge sites such as <a href="http://rubyquiz.com">Ruby Quiz</a> and <a href="http://rubeque.herokuapp.com">Rubeque</a>.</p>
+
+<p>Class starts on February 4 and I plan to spend the next couple of weeks diving into backbone.js a little bit, getting a bit deeper into jQuery and getting through as much of the <a href="http://ruby.railstutorial.org">Rails Tutorial</a> as I can.</p>
+
+<p>I&rsquo;ve been spending almost all of my free time learning these technologies and going through tutorials, but not actually building anything. The school recommends having a blog, so rather than build a blog using Wordpress, Tumblr, Blogger or some other CMS, I thought it would be much hacker-ier to build it in Octopress and push it to Github and have it hosted through Github Pages.</p>
+
+<p>So, here it is &hellip; my first web app &hellip; my blog.</p>
+]]></content>
+  </entry>
+  
+</feed>

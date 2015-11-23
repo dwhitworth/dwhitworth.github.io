@@ -1,0 +1,415 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Blocks, Procs, Lambdas &amp; Closures in Ruby - Donovan Whitworth</title>
+  <meta name="author" content="Donovan Whitworth">
+  <link rel="author" href="humans.txt">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  
+    
+  
+  <meta name="description" content="In JavaScript, we are quite used to the functional features of the language and creating closures. In Ruby, we do it all the time, but sometimes don &hellip;">
+  
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://dwhitworth.github.io/blog/2014/04/20/blocks-procs-lambdas-and-closures-in-ruby/">
+  <link href="/favicon.png" rel="icon">
+  <link href='http://fonts.googleapis.com/css?family=Cantarell' rel='stylesheet' type='text/css'>
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Donovan Whitworth" type="application/atom+xml">
+  <meta name="og:type" content="website" />
+  <meta name="og:site_name" content="Donovan Whitworth" />
+  <meta name="og:title" content="Blocks, Procs, Lambdas &amp; Closures in Ruby" />
+  <meta name="og:description" content="In JavaScript, we are quite used to the functional features of the language and creating closures. In Ruby, we do it all the time, but sometimes don &hellip;" />
+  <meta name="og:url" content="http://dwhitworth.github.io/blog/2014/04/20/blocks-procs-lambdas-and-closures-in-ruby/"/>
+  <meta name="url" content="http://dwhitworth.github.io/blog/2014/04/20/blocks-procs-lambdas-and-closures-in-ruby/">
+  
+  <meta name="subject" content="JavaScript"/>
+  <meta name="category" content="JavaScript"/>
+  
+  <meta name="distribution" content="global">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <nav role="navigation"><div class="navbar">
+  <div class="navbar-inner">
+    <a class="brand" href="/">Donovan Whitworth</a>
+    <ul class="nav">
+      <li><a href="/">Home</a></li>
+      <li><a href="/blog/archives">Archives</a></li>
+    </ul>
+    <ul class="nav" data-subscription="rss">
+      <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+      
+    </ul>
+      
+    <form class="navbar-form" action="http://google.com/search" method="get">
+      <fieldset role="search">
+        <input type="hidden" name="q" value="site:dwhitworth.github.io" />
+        <input class="span2" type="text" name="q" results="0" placeholder="Search"/>
+      </fieldset>
+    </form>
+      
+    
+  </div>
+</div>
+</nav>
+  <div class="wrapper_single">
+    <div class="container">
+      <article class="span8 offset2" role="article">
+        <div class="article-format">
+
+  <header>
+    
+      <h1 class="entry-title">Blocks, Procs, Lambdas &amp; Closures in Ruby</h1>
+    
+    
+      <p class="meta">
+        
+  
+
+
+  
+    <span class="byline author vcard">by <span class="fn">Donovan Whitworth</span></span>
+  
+
+ - 
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-20T12:03:16-07:00" pubdate data-updated="true">Apr 20<span>th</span>, 2014</time> - 
+        
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/javascript/'>JavaScript</a>
+  
+</span>
+
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>In JavaScript, we are quite used to the functional features of the language and creating closures. In Ruby, we do it all the time, but sometimes don&rsquo;t realize that we are creating closures and passing functions around.</p>
+
+<!-- more -->
+
+
+<p>Take our very common .map method in Ruby:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">array</span> <span class="o">=</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="o">]</span> <span class="c1"># =&gt; [1,2,3,4,5]</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">array</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="p">}</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">25</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We know that when we pass a block into the .map method it will return a new array based on the data in the original array provided and the code we put in the block. But, what&rsquo;s going on internally?</p>
+
+<p>Well, really all that&rsquo;s going on is our good, old .each method, with a yield to the block, then pushing those values into the new array. Let&rsquo;s try to rebuild the .map (we&rsquo;ll call it new_map) method from scratch:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Array</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">new_map</span><span class="p">(</span><span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">new_array</span> <span class="o">=</span> <span class="o">[]</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nb">self</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">item</span><span class="o">|</span>
+</span><span class='line'>      <span class="n">new_array</span> <span class="o">&lt;&lt;</span> <span class="k">yield</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">new_array</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>What makes the above an example of a closure? Well, a closure is basically a method(or function) that has a couple of properties:
+&ndash; It can be passed around, like any other object.
+&ndash; It remembers all the values of the variable it had when it was defined. So, even though they may no longer be in scope, the method still has access to those variables.</p>
+
+<p>Let&rsquo;s do a simple closure example using a Proc:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">add_one</span>
+</span><span class='line'>  <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>  <span class="no">Proc</span><span class="o">.</span><span class="n">new</span> <span class="p">{</span> <span class="n">x</span> <span class="o">+=</span> <span class="mi">1</span> <span class="p">}</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">a</span> <span class="o">=</span> <span class="n">add_one</span>
+</span><span class='line'><span class="n">a</span><span class="o">.</span><span class="n">call</span> <span class="c1"># =&gt; 1</span>
+</span><span class='line'><span class="n">a</span><span class="o">.</span><span class="n">call</span> <span class="c1"># =&gt; 2</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">b</span> <span class="o">=</span> <span class="n">add_one</span>
+</span><span class='line'><span class="n">b</span><span class="o">.</span><span class="n">call</span> <span class="c1"># =&gt; 1</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In the above example, the add_one method has a return value of a Proc that adds 1 to x, which was defined outside the Proc, but inside the method. So, your Proc has access to x, because it was available when that Proc was defined.</p>
+
+<p>Well, what&rsquo;s a lambda then and what makes it different than a Proc?</p>
+
+<p>First, let&rsquo;s see the syntax of Procs, vs Lambdas:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">a</span> <span class="o">=</span> <span class="no">Proc</span><span class="o">.</span><span class="n">new</span> <span class="p">{</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span><span class="p">}</span> <span class="c1"># this is a Proc that will return x^2 when called</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">b</span> <span class="o">=</span> <span class="nb">lambda</span> <span class="p">{</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="p">}</span> <span class="c1"># this is a lambda that will return x^2 when called</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">c</span> <span class="o">=</span> <span class="o">-&gt;</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="p">{</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="p">}</span> <span class="c1"># another way to define a lambda that will return x^2 when called</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Here, we have defined a proc and a couple of lambdas, very similar to how we would define anonymous functions in JavaScript. What&rsquo;s the difference between procs and lambdas? Not much. If you call .class on a lambda, you will find that they are just procs. The only differences is that lambdas are a more strict form of a proc:
+&ndash; Lambdas are more strict with argument checking. With procs you can pass in the wrong number of arguments and will still execute, while lambdas will throw an error.
+&ndash; Lambdas can return a value with the <code>return</code> keyword.</p>
+
+<p>So, what&rsquo;s the point of using closures? In a pure functional language, there&rsquo;s a HUGE point to it. Functional languages are <em>stateless</em>, but closures are how you can make some state continue as long as the closure continues. In imperative languages like Ruby, the purpose is a little bit cloudier, but you can use lambdas and procs sometimes to make your code a bit more concise in certain situations.</p>
+
+<p>Bis später.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+
+  
+    <span class="byline author vcard">by <span class="fn">Donovan Whitworth</span></span>
+  
+
+ - 
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-20T12:03:16-07:00" pubdate data-updated="true">Apr 20<span>th</span>, 2014</time> - 
+      
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/javascript/'>JavaScript</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://dwhitworth.github.io/blog/2014/04/20/blocks-procs-lambdas-and-closures-in-ruby/" data-via="dwhitworthdev" data-counturl="http://dwhitworth.github.io/blog/2014/04/20/blocks-procs-lambdas-and-closures-in-ruby/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    
+      <a class="pull-left" href="/blog/2014/03/02/javascript-closures-hopefully-explained/" title="Previous Post: Javascript closures (hopefully) explained">&laquo; Javascript closures (hopefully) explained</a>
+    
+    
+      <a class="pull-right" href="/blog/2014/04/26/sql-is-your-friend/" title="Next Post: SQL Is Your Friend">SQL Is Your Friend &raquo;</a>
+    
+  </footer>
+
+</div>
+
+        
+      </article>
+    </div>
+  </div>
+  <div id="footer-widgets">
+  <div class="container">
+    <div class="row">
+  <div class="span3">
+    <h2>recent posts</h2>
+    <ul class="recent_posts">
+      
+        <li>
+          <a href="/blog/2014/08/18/ruby-the-absolutely-100-percent-wrong-way-to-define-a-method/">Ruby: The absolutely 100% wrong way to define a method</a>
+        </li>
+      
+        <li>
+          <a href="/blog/2014/04/26/sql-is-your-friend/">SQL Is Your Friend</a>
+        </li>
+      
+        <li>
+          <a href="/blog/2014/04/20/blocks-procs-lambdas-and-closures-in-ruby/">Blocks, Procs, Lambdas &amp; Closures in Ruby</a>
+        </li>
+      
+        <li>
+          <a href="/blog/2014/03/02/javascript-closures-hopefully-explained/">Javascript closures (hopefully) explained</a>
+        </li>
+      
+        <li>
+          <a href="/blog/2014/02/23/git-stash/">git stash</a>
+        </li>
+      
+    </ul>
+    <h2><a href="/blog/archives">archives</a></h2>
+  </div>
+  <div class="span3">
+    
+<h2>instagram</h2>
+<div class="instagram" data-instagram-user="361614302" data-instagram-client="" data-instagram-access-token="361614302.b6760f5.f781c6d06a4c4346b888465dbfaaab05"></div>
+<button id="instabutton" class="btn">more</button>
+
+
+  </div>
+  <div class="span4">
+    
+<h2>twitter</h2>
+
+<a class="twitter-timeline" href="https://twitter.com/dwhitworthdev" data-widget-id="501829145030955009">Tweets by @dwhitworthdev</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
+
+
+
+  </div>
+  <div class="span2">
+    <h2>found on</h2>
+
+<a href="https://github.com/dwhitworth/" rel="tooltip" title="Github"><img class="social_icon" title="Github" alt="github icon" src="/images/glyphicons_381_github.png"></a>
+
+
+
+
+
+<a href="http://www.linkedin.com/in/donovanwhitworth" rel="tooltip" title="Linkedin"><img class="social_icon" title="Linkedin" alt="Linkedin icon" src="/images/glyphicons_377_linked_in.png"></a>
+
+
+
+<a href="http://twitter.com/dwhitworthdev" rel="tooltip" title="Twitter"><img class="social_icon" title="Twitter" alt="Twitter icon" src="/images/glyphicons_391_twitter_t.png"></a>
+
+
+
+
+
+
+
+<h2>contact at</h2>
+<a href="mailto:donovan.whitworth@gmail.com">donovan.whitworth@gmail.com</a>
+
+
+  </div>
+</div>
+
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-left">
+  <a href="/">Donovan Whitworth</a>
+  - Copyright &copy; 2014 - Donovan Whitworth
+</p>
+<p class="pull-right">
+  <span>Powered by <a href="http://octopress.org/">Octopress</a>.</span>
+  
+    <span>Designed by <a href="http://www.AdrianArtiles.com">Adrian Artiles</a>.</span>
+  
+</p>
+
+  </div>
+</footer>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+<script>window.jQuery || document.write('<script src="/javascripts/libs/jquery-1.7.2.min.js" type="text/javascript"><\/script>')</script>
+<script src="/javascripts/libs/bootstrap.min.js" type="text/javascript"></script>
+<script src="/javascripts/jquery.tweet.js" type="text/javascript"></script>
+<script src="/javascripts/jquery.instagram.js" type="text/javascript"></script>
+<script src="/javascripts/libs/jquery.masonry.min.js" type="text/javascript"></script>
+<script src="/javascripts/custom.js" type="text/javascript"></script>
+
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+</body>
+</html>
