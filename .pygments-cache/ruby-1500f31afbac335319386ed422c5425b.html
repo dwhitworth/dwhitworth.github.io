@@ -1,0 +1,72 @@
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Book</span>
+  <span class="kp">attr_reader</span> <span class="ss">:author</span><span class="p">,</span> <span class="ss">:title</span><span class="p">,</span> <span class="ss">:id</span><span class="p">,</span> <span class="ss">:status</span>
+
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">,</span> <span class="n">author</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">,</span> <span class="nb">id</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">)</span>
+    <span class="vi">@author</span> <span class="o">=</span> <span class="n">author</span>
+    <span class="vi">@title</span> <span class="o">=</span> <span class="n">title</span>
+    <span class="vi">@id</span> <span class="o">=</span> <span class="nb">id</span>
+    <span class="vi">@status</span> <span class="o">=</span> <span class="s1">&#39;available&#39;</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">check_out</span>
+    <span class="k">if</span> <span class="vi">@status</span> <span class="o">==</span> <span class="s1">&#39;checked_out&#39;</span>
+      <span class="kp">false</span>
+    <span class="k">else</span>
+      <span class="vi">@status</span> <span class="o">=</span> <span class="s1">&#39;checked_out&#39;</span>
+      <span class="kp">true</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">check_in</span>
+    <span class="vi">@status</span> <span class="o">=</span> <span class="s1">&#39;available&#39;</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Borrower</span>
+  <span class="kp">attr_accessor</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:count</span>
+
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+    <span class="vi">@name</span> <span class="o">=</span> <span class="nb">name</span>
+    <span class="vi">@count</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="k">end</span>
+
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Library</span>
+  <span class="kp">attr_accessor</span> <span class="ss">:available_books</span><span class="p">,</span> <span class="ss">:borrowed_books</span>
+  <span class="kp">attr_reader</span> <span class="ss">:books</span>
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="nb">name</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">)</span>
+    <span class="vi">@books</span> <span class="o">=</span> <span class="o">[]</span>
+    <span class="vi">@available_books</span> <span class="o">=</span> <span class="o">[]</span>
+    <span class="vi">@borrowed_books</span> <span class="o">=</span> <span class="p">{}</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">register_new_book</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">author</span><span class="p">)</span>
+    <span class="vi">@books</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="no">Book</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">author</span><span class="p">,</span> <span class="n">books</span><span class="o">.</span><span class="n">count</span><span class="p">))</span>
+    <span class="vi">@available_books</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="no">Book</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">author</span><span class="p">,</span> <span class="n">books</span><span class="o">.</span><span class="n">count</span><span class="p">))</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">check_out_book</span><span class="p">(</span><span class="n">book_id</span><span class="p">,</span> <span class="n">borrower</span><span class="p">)</span>
+    <span class="n">borrower</span><span class="o">.</span><span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">borrower</span><span class="o">.</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">2</span>
+      <span class="kp">nil</span>
+    <span class="k">else</span>
+      <span class="k">if</span> <span class="vi">@books</span><span class="o">[</span><span class="n">book_id</span><span class="o">].</span><span class="n">status</span> <span class="o">==</span> <span class="s1">&#39;available&#39;</span>
+        <span class="vi">@books</span><span class="o">[</span><span class="n">book_id</span><span class="o">].</span><span class="n">check_out</span>
+        <span class="vi">@borrower</span> <span class="o">=</span> <span class="n">borrower</span>
+        <span class="vi">@gone</span> <span class="o">=</span> <span class="vi">@available_books</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">book_id</span><span class="p">)</span>
+        <span class="c1"># @borrowed_books.push @gone</span>
+        <span class="vi">@books</span><span class="o">[</span><span class="n">book_id</span><span class="o">]</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">check_in_book</span><span class="p">(</span><span class="n">book</span><span class="p">)</span>
+    <span class="n">book</span><span class="o">.</span><span class="n">check_in</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">get_borrower</span><span class="p">(</span><span class="n">book</span><span class="p">)</span>
+    <span class="vi">@borrower</span><span class="o">.</span><span class="n">name</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>

@@ -1,0 +1,10 @@
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Dare</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">has_many</span> <span class="ss">:contributions</span>
+  <span class="c1"># ...</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Contribution</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">belongs_to</span> <span class="ss">:dare</span>
+  <span class="c1"># ...</span>
+<span class="k">end</span>
+</pre></div>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: SQL | Donovan Whitworth]]></title>
+  <link href="http://dwhitworth.github.io/blog/categories/sql/atom.xml" rel="self"/>
+  <link href="http://dwhitworth.github.io/"/>
+  <updated>2015-11-23T15:41:04+11:00</updated>
+  <id>http://dwhitworth.github.io/</id>
+  <author>
+    <name><![CDATA[Donovan Whitworth]]></name>
+    <email><![CDATA[donovan.whitworth@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[SQL Is Your Friend]]></title>
+    <link href="http://dwhitworth.github.io/blog/2014/04/27/sql-is-your-friend/"/>
+    <updated>2014-04-27T09:36:52+10:00</updated>
+    <id>http://dwhitworth.github.io/blog/2014/04/27/sql-is-your-friend</id>
+    <content type="html"><![CDATA[<p>Our final project for MakerSquare was crowd-funding platform for public dares, challenges and acts of kindness. You can check it out here: <a href="http://we-dare-you.herokuapp.com">we-dare-you.herokuapp.com</a>. Every dare had multiple monetary contributions and we would sum up those contributions via a &ldquo;pot_size&rdquo; method. <!-- more --></p>
+
+<p>When summing up multiple elements in an array, our go to method is Ruby&rsquo;s <code>inject</code> method, but sometimes we forget that SQL has some built in functionality that may be faster and ease the load on memory.</p>
+
+<p>We had 8 models with quite a few associations, but let&rsquo;s concentrate on two models:</p>
+
+<p>```ruby
+class Dare &lt; ActiveRecord::Base
+  has_many :contributions
+  # &hellip;
+end</p>
+
+<p>class Contribution &lt; ActiveRecord::Base
+  belongs_to :dare
+  # &hellip;
+end
+```</p>
+
+<p>So, to get a pot size for a specific dare, we made a method that looked something like this:</p>
+
+<p><code>ruby
+def pot_size
+  self.contributions.inject(0) {| total, contribution | total + contribution.amount }.to_f / 100
+end
+</code></p>
+
+<p>This should be refactored to:</p>
+
+<p><code>ruby
+def pot_size
+  self.contributions.map(&amp;:amount).inject(:+).to_f / 100
+end
+</code></p>
+
+<p>Using this method, we use the has_many association to get all the contributions for a specific dare. The SQL generated looks something like this:</p>
+
+<p><code>SELECT &ldquo;amount&rdquo;.* FROM &ldquo;contributions&rdquo; WHERE &ldquo;contributions&rdquo;.&ldquo;dare_id&rdquo; = &lt;dare_id></code></p>
+
+<p>I seeded a database with 100,000 test contributions and the above method took 1.6 seconds and change. The SQL statement above is finding all the contributions and putting them into memory before adding up the amounts.</p>
+
+<p>A much more efficient way is to use SQL to do the work of summing the amounts. It will be much faster and use much less memory. We can refactor the &ldquo;pot_size&rdquo; method to look more like this:</p>
+
+<p><code>ruby
+def pot_size
+  self.contributions.sum(:amount).to_f / 100
+end
+</code></p>
+
+<p>It generated SQL that looked like this:</p>
+
+<p><code>SELECT SUM(&ldquo;contributions&rdquo;.&ldquo;amount&rdquo;) AS sum_id FROM &ldquo;contributions&rdquo; WHERE &ldquo;contributions&rdquo;.&ldquo;dare_id&rdquo; = &lt;dare_id></code></p>
+
+<p>Using the above method, we avoid pulling all those records into memory and let SQL sum up the amounts in one step. The above method took 17ms!</p>
+
+<p>The moral of the story is you don&rsquo;t <em>always</em> have to use Ruby methods when manipulating your ActiveRecord objects, sometimes good old SQL is faster and uses less memory.</p>
+]]></content>
+  </entry>
+  
+</feed>
