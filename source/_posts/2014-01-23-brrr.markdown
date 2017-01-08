@@ -1,0 +1,13 @@
+---
+layout: post
+title: "Brrr"
+date: 2014-01-23 20:25:49 -0800
+comments: true
+categories: 
+---
+Where I am now...
+<!-- more -->
+![Weather in LA](/images/photo-2.png)
+
+Where I'll be in two weeks...
+![Weather in Austin](/images/photo-1.png)

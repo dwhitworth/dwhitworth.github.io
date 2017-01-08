@@ -1,0 +1,41 @@
+---
+layout: post
+title: "git stash"
+date: 2014-02-23 20:46:06 -0600
+comments: true
+categories: [Git]
+---
+
+During this weekend's hackathon, our team split up duties when we were not pair programming. With over 50 issues, 90 commits and <!-- more -->30 branches, this means we had a s**t-ton of pull requests, code-review and merging, in our effort to apply best practices for version control.
+
+When we had merge conflicts, Git suggested we stash our changes, pull down the most recent changes, then merge our branch and resolve merge issues before pushing.
+
+Great, but I had no idea what git stash was.
+
+Well, in plain language, git warns you that if you pull a branch, you better be ready for it to overwrite everything you've just done unless you take certain steps:
+
+- Discard your changes: You could use <code>$ git clean</code> or <code>$ git reset –hard</code> to do this, this would make all your local changes disappear.
+
+- Ignore your changes: <code>$ git checkout</code> would keep any changes you made locally that do not conflict with the incoming merge, but you will lose any local changes that do have merge conflicts.
+
+- Set your changes aside: <code>$ git stash</code> hides your local changes so you can pull down the most recent master, then 'unstash' your changes and resolve merge issues locally.
+
+So, here is what my normal workflow looked like if I came across a merge conflict:
+
+```bash
+$ git stash
+$ git pull
+$ git stash apply
+```
+
+You can stash multiple times, but it can get pretty messy. If you have multiple stashes, type <code>$ git list</code> to get a list of your stashes, the output would look something like this:
+
+```bash
+stash@{0}: WIP on master: 049d078 added the index file
+stash@{1}: WIP on master: c264051... Revert "added file_size"
+stash@{2}: WIP on master: 21d80a5... added number to log
+```
+
+If this is the case, simply using <code>$ git stash</code> would only apply the most recent stash, so if you wanted to apply a different commit, you would type <code>$ git stash apply stash@{2}</code>, or whatever number corresponds to the stash you want to apply.
+
+Bye for now :)
