@@ -1,25 +1,11 @@
 ---
 layout: post
-title:  "Welcome to Jekyll!"
+title:  "Hello World!"
 date:   2017-01-09 15:05:54 +1100
-categories: jekyll update
+categories: software
 ---
-You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run `jekyll serve`, which launches a web server and auto-regenerates your site when a file is updated.
+Welcome to my blog. Since this is my initial post, I'll use it to introduce myself and give you a little background on me.
 
-To add new posts, simply add a file in the `_posts` directory that follows the convention `YYYY-MM-DD-name-of-post.ext` and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.
+My name is Donovan Whitorth and I am currently a software developer for [Bound Round](https://www.boundround.com), a company that makes booking tours, activities and excursions easier for traveling families.
 
-Jekyll also offers powerful support for code snippets:
-
-{% highlight ruby %}
-def print_hi(name)
-  puts "Hi, #{name}"
-end
-print_hi('Tom')
-#=> prints 'Hi, Tom' to STDOUT.
-{% endhighlight %}
-
-Check out the [Jekyll docs][jekyll-docs] for more info on how to get the most out of Jekyll. File all bugs/feature requests at [Jekyll’s GitHub repo][jekyll-gh]. If you have questions, you can ask them on [Jekyll Talk][jekyll-talk].
-
-[jekyll-docs]: http://jekyllrb.com/docs/home
-[jekyll-gh]:   https://github.com/jekyll/jekyll
-[jekyll-talk]: https://talk.jekyllrb.com/
+I've had a colorful and varied career history. Although I had always been a passionate technologist (My first programming experience was learning BASIC on an Apple ][ computer), I spent the first part of my post high school years studying music and communications. My first real job was as the editorial assistant for a trade magazine called Video Store Magazine. I was fairly quickly promoted to Assistant Editor, and spent a few years as a journalist. I had always been playing in bands as a hobby, but I stumbled into a band that had enough commercial success to require me to quit my job - meaning the band was busy and there was enough money there to barely feed us and get through a couple of tours.
